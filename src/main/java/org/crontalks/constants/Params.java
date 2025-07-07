@@ -1,4 +1,4 @@
-package org.crontalks;
+package org.crontalks.constants;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;

@@ -26,3 +26,6 @@ google:
 email:
   from: ${EMAIL-FROM}
   cc: ${EMAIL-CC}
+
+cron:
+  schedule: ${CRON-EXPRESSION}

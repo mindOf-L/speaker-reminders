@@ -1,4 +1,4 @@
-package org.crontalks;
+package org.crontalks.service;
 
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;

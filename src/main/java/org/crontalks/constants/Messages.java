@@ -1,4 +1,4 @@
-package org.crontalks;
+package org.crontalks.constants;
 
 public class Messages {
 

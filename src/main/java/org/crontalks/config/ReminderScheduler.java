@@ -1,4 +1,4 @@
-package org.crontalks;
+package org.crontalks.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -16,7 +16,7 @@ public class ReminderScheduler {
 
     private final Job reminderJob;
 
-    @Scheduled(cron = "30 31 20 ? * MON")
+    @Scheduled(cron = "#{@cronProperties.schedule}")
     public void runReminderJob() throws Exception {
         JobParameters params = new JobParametersBuilder()
             .addLong("run.id", System.currentTimeMillis()) // parámetro único
