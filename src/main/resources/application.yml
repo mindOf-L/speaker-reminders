@@ -13,6 +13,11 @@ spring:
           starttls:
             enable: true
     protocol: ${MAIL-PROTOCOL}
+  batch:
+    job:
+      enabled: false
+  main:
+    allow-bean-definition-overriding: true
 
 google:
   sheet: ${GSHEET-BOOK}
