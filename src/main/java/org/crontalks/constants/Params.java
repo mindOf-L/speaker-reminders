@@ -33,6 +33,9 @@ public class Params {
         @Value("${email.cc}")
         public String[] emailCC;
 
+        @Value("${MEETING-TIME:12:30}")
+        public String meetingTime;
+
         @Getter
         private final String reminderTemplate = """
             Hola %s. 👋
