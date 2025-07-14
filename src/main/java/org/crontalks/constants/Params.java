@@ -26,9 +26,26 @@ public class Params {
 
         @Value("${google.speaker-sheet}")
         private String thisWeekSpeaker;
+    }
+
+    @Getter
+    @Component
+    @NoArgsConstructor
+    public static class Scheduling {
+
+        @Getter
+        private static Scheduling Instance;
+
+        @PostConstruct
+        public void init() {
+            Scheduling.Instance = this;
+        }
 
         @Value("${email.from}")
         public String emailFrom;
+
+        @Value("${email.from}")
+        public String overseerEmail;
 
         @Value("${email.cc}")
         public String[] emailCC;
@@ -36,18 +53,27 @@ public class Params {
         @Value("${MEETING-TIME:12:30}")
         public String meetingTime;
 
+        @Value("${TALK-OVERSEER}")
+        public String talkOverseer;
+
+        @Value("${CONGREGATION-ADDRESS}")
+        public String congregationAddress;
+
+        @Value("${CONGREGATION-GMAPS}")
+        public String congregationGMaps;
+
         @Getter
-        private final String reminderTemplate = """
+        private final String reminderSpeakerTemplate = """
             Hola %s. 👋
             
             Soy %s de la congregación Veredillas de Torrejón de Ardoz, encantado de saludarte. 😀
             
             Según los planes de discursos, te esperamos este %s para escuchar el bosquejo con el tema *N° %s*, con el título *%s*.
             
-            *Congregación: Veredillas- Torrejón de Ardoz*
+            *Congregación: %s*
             
-            La reunión comienza el domingo a las 12:30 y la dirección es C. Álamo, 37, 28850 Torrejón de Ardoz.
-            https://maps.app.goo.gl/1ds9mg7UQWU6XFjt5
+            La reunión comienza el domingo a las %s y la dirección es %s.
+            Puedes consultar la dirección en Google Maps: %s
             
             Agradecería que si puedes lo antes posible me confirmaras:
             
@@ -58,6 +84,19 @@ public class Params {
             ⏺️ Si utilizarás imágenes. En ese caso envíamelas por favor a %s con alguna indicación de cuándo ponerlas y quitarlas. En cuanto las tenga, te confirmo que he recibido el correo.
             
             Un fuerte abrazo.
+            """;
+
+        @Getter
+        private final String reminderSpeakerNotInformedTemplate = """
+            Hola.
+            
+            He intentado enviar un correo a %s pero no he podido.
+            
+            Por favor, echa un vistazo a la tabla de Google Sheets y asegúrate de que tengas los datos correctos. Parece que el campo de correo electrónico está vacío o no es válido.
+            
+            Corrige el dato y lo intentaré de nuevo en 24 horas.
+            
+            Saludos de tu app!
             """;
     }
 

@@ -16,7 +16,7 @@ public class ScheduledTalkMapper {
 
     public static ScheduledTalk toScheduledTalk(List<Object> row) {
         var talkDate = LocalDate.from(DateTimeFormatter.ofPattern("dd/MM/yyyy").parse(row.getFirst().toString()));
-        var talkTime = LocalTime.from(DateTimeFormatter.ofPattern("HH:mm").parse(Params.GSheets.getInstance().meetingTime));
+        var talkTime = LocalTime.from(DateTimeFormatter.ofPattern("HH:mm").parse(Params.Scheduling.getInstance().meetingTime));
 
         return ScheduledTalk.builder()
             .localDateTime(LocalDateTime.of(talkDate, talkTime))
