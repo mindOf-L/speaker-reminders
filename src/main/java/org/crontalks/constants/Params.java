@@ -54,7 +54,7 @@ public class Params {
         public String meetingTime;
 
         @Value("${TALK-OVERSEER}")
-        public String talkOverseer;
+        public String talksOverseer;
 
         @Value("${CONGREGATION-ADDRESS}")
         public String congregationAddress;
@@ -63,12 +63,38 @@ public class Params {
         public String congregationGMaps;
 
         @Getter
-        private final String reminderSpeakerTemplate = """
-            Hola %s. 👋
+        private final String reminderSpeakerTemplateEmail = """
+            <p style="font-size:1.5em">Hola %s 👋</p>
             
-            Soy %s de la congregación Veredillas de Torrejón de Ardoz, encantado de saludarte. 😀
+            <p style="font-size:1.5em">Soy %s de la congregación Veredillas de Torrejón de Ardoz, encantado de saludarte 😀</p>
             
-            Según los planes de discursos, te esperamos este %s para escuchar el bosquejo con el tema *N° %s*, con el título *%s*.
+            <p style="font-size:1.5em">Según los planes de discursos, te esperamos este %s para escuchar el bosquejo con el tema <b>N° %s</b>, con el título:</p>
+            <p style="font-size:2em;font-weight:bold">%s</h2>
+            
+            <p style="font-size:1.75em;font-weight:bold">Congregación: %s</h3>
+            
+            <p style="font-size:1.5em">La reunión comienza el domingo a las %s y la dirección es %s.<br />
+            Puedes consultar la dirección en Google Maps: %s</p>
+            
+            <p style="font-size:1.5em">Agradecería que si puedes lo antes posible me confirmaras:</p>
+            
+            <p style="font-size:1.5em">▶️ Si los datos son correctos.</p>
+            
+            <p style="font-size:1.5em">➡️ La canción que usarás.</p>
+            
+            <p style="font-size:1.5em">⏺️ Si utilizarás imágenes. En ese caso envíamelas por favor a %s con alguna indicación de cuándo ponerlas y quitarlas. En cuanto las tenga, te confirmo que he recibido el correo.</p>
+            
+            <p style="font-size:1.5em">Un fuerte abrazo 🤗</p>
+            """;
+
+        @Getter
+        private final String reminderSpeakerTemplateWhatsApp = """
+            Hola %s 👋
+            
+            Soy %s de la congregación Veredillas de Torrejón de Ardoz, encantado de saludarte 😀
+            
+            Según los planes de discursos, te esperamos este %s para escuchar el bosquejo con el tema *N° %s*, con el título
+            *%s*
             
             *Congregación: %s*
             
@@ -83,7 +109,7 @@ public class Params {
             
             ⏺️ Si utilizarás imágenes. En ese caso envíamelas por favor a %s con alguna indicación de cuándo ponerlas y quitarlas. En cuanto las tenga, te confirmo que he recibido el correo.
             
-            Un fuerte abrazo.
+            Un fuerte abrazo 🤗
             """;
 
         @Getter
