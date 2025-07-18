@@ -33,3 +33,10 @@ email:
 
 cron:
   schedule: ${CRON-EXPRESSION}
+
+whatsapp:
+  url: ${WHATSAPP_URL}
+  template: ${WHATSAPP_TEMPLATE}
+  token: ${WHATSAPP_TOKEN}
+  phoneNumberId: ${WHATSAPP_PHONE_NUMBER_ID}
+  toPhoneNumber: ${WHATSAPP_TO_PHONE_NUMBER}

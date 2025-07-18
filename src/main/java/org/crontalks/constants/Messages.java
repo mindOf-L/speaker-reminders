@@ -10,6 +10,7 @@ public class Messages {
         NOT_IMPLEMENTED_YET = "Not implemented yet",
 
         ERROR_SENDING_EMAIL = "Error sending email: %s",
+        ERROR_SENDING_WHATSAPP = "Error sending whatsapp to %s",
         ERROR_GETTING_DATA_FROM_GSHEET = "Error getting data from Google Sheet",
         ERROR_EMAIL_RECIPIENT_NOT_INFORMED = "Email recipient not informed"
     ;

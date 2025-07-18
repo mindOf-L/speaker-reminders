@@ -31,6 +31,36 @@ public class Params {
     @Getter
     @Component
     @NoArgsConstructor
+    public static class WhatsApp {
+
+        @Value("${whatsapp.url}")
+        public String whatsAppUrl;
+
+        @Value("${whatsapp.template}")
+        public String whatsAppTemplate;
+
+        @Value("${whatsapp.token}")
+        public String whatsAppToken;
+
+        @Value("${whatsapp.phoneNumberId}")
+        public String whatsAppPhoneNumberId;
+
+        @Value("${whatsapp.toPhoneNumber}")
+        public String whatsAppToPhoneNumber;
+
+        @Getter
+        private static WhatsApp Instance;
+
+        @PostConstruct
+        public void init() {
+            WhatsApp.Instance = this;
+        }
+
+    }
+
+    @Getter
+    @Component
+    @NoArgsConstructor
     public static class Scheduling {
 
         @Getter
