@@ -17,7 +17,7 @@ import static org.crontalks.entity.EmailTemplate.emailSpeakerTemplate;
 import static org.crontalks.entity.EmailTemplate.whatsAppSpeakerTemplate;
 
 @RestController
-@RequestMapping("/api/test")
+@RequestMapping("/test")
 @RequiredArgsConstructor
 public class TestController {
 

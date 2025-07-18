@@ -19,6 +19,10 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+  mvc:
+    servlet:
+      path: /api
+
 google:
   sheet: ${GSHEET-BOOK}
   speaker-sheet: ${GSHEET-SPEAKER}

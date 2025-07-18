@@ -9,7 +9,6 @@ import org.crontalks.service.GmailSmtpService;
 import org.crontalks.service.SpeakerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,14 +22,14 @@ import static org.crontalks.entity.EmailTemplate.emailSpeakerNotInformedTemplate
 import static org.crontalks.entity.EmailTemplate.emailSpeakerTemplate;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/email")
 @RequiredArgsConstructor
 public class GmailController {
 
     private final GmailSmtpService emailService;
     private final SpeakerService speakerService;
 
-    @PostMapping("/email")
+    @PostMapping
     public ResponseEntity<?> sendMail(@RequestParam String to, @RequestParam String subject, @RequestParam String body) {
         try {
             emailService.sendEmail(to, subject, body);
@@ -41,7 +40,7 @@ public class GmailController {
         }
     }
 
-    @PostMapping("/email/speaker/current")
+    @PostMapping("/speaker/current")
     public ResponseEntity<?> sendMail() throws MessagingException, UnsupportedEncodingException {
         var scheduledTalk = speakerService.getCurrentScheduledTalk();
 
@@ -64,14 +63,4 @@ public class GmailController {
         }
     }
 
-
-    @GetMapping("/speaker")
-    public ResponseEntity<?> speaker() {
-        var scheduledTalk = speakerService.getCurrentScheduledTalk();
-
-        if (scheduledTalk == null)
-            return new ResponseEntity<>(Messages.ERROR_GETTING_DATA_FROM_GSHEET, HttpStatus.INTERNAL_SERVER_ERROR);
-
-        return new ResponseEntity<>(scheduledTalk, HttpStatus.OK);
-    }
 }
