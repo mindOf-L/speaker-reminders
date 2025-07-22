@@ -89,13 +89,9 @@ public class Params {
             return ImmutableMap.of("type", "text", "parameter_name", param_name, "text", param_value);
         }
 
-        private final String speakerCustomImagesTemplateWhatsApp = """
-            Si utilizarás *imágenes* 🏞️ envíamelas por favor a _%s_ o por WhatsApp al hermano de video (%s - %s), con alguna indicación de cuándo ponerlas y quitarlas.
-            """;
+        private final String speakerCustomImagesTemplateWhatsApp = "Si utilizarás *imágenes* 🏞️ envíamelas por favor a _%s_ o por WhatsApp al hermano de video (%s - %s), con alguna indicación de cuándo ponerlas y quitarlas.";
 
-        private final String outlineImagesTemplateWhatsApp = """
-            Qué *imágenes* 🏞️ del bosquejo utilizarás (el bosquejo trae alguna/s). Envíame cuáles elegiste a _%s_ o por WhatsApp al hermano de video (%s - %s), con alguna indicación de cuándo ponerlas y quitarlas.
-            """;
+        private final String outlineImagesTemplateWhatsApp = "Qué *imágenes* 🏞️ del bosquejo utilizarás (el bosquejo trae alguna/s). Envíame cuáles elegiste a _%s_ o por WhatsApp al hermano de video (%s - %s), con alguna indicación de cuándo ponerlas y quitarlas.";
 
     }
 
