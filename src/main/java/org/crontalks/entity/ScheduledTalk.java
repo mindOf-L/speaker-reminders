@@ -12,5 +12,6 @@ public record ScheduledTalk (
     int outlineNumber,
     String outlineTitle,
     String phoneNumber,
-    String email
+    String email,
+    boolean outlineHasImages
 ) { }
