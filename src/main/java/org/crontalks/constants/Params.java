@@ -1,5 +1,6 @@
 package org.crontalks.constants;
 
+import com.google.common.collect.ImmutableMap;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,12 +14,15 @@ public class Params {
     @NoArgsConstructor
     public static class GSheets {
 
-        @Getter
         private static GSheets Instance;
 
         @PostConstruct
         public void init() {
             GSheets.Instance = this;
+        }
+
+        public static GSheets getGSheetsParam() {
+            return Instance;
         }
 
         @Value("${google.sheet}")
@@ -34,27 +38,64 @@ public class Params {
     public static class WhatsApp {
 
         @Value("${whatsapp.url}")
-        public String whatsAppUrl;
+        private String whatsAppUrl;
 
         @Value("${whatsapp.template}")
-        public String whatsAppTemplate;
+        private String whatsAppTemplate;
 
         @Value("${whatsapp.token}")
-        public String whatsAppToken;
+        private String whatsAppToken;
 
         @Value("${whatsapp.phoneNumberId}")
-        public String whatsAppPhoneNumberId;
+        private String whatsAppPhoneNumberId;
 
-        @Value("${whatsapp.toPhoneNumber}")
-        public String whatsAppToPhoneNumber;
+        @Value("${whatsapp.testPhoneNumber}")
+        private String whatsAppTestPhoneNumber;
 
-        @Getter
         private static WhatsApp Instance;
 
         @PostConstruct
         public void init() {
             WhatsApp.Instance = this;
         }
+
+        public static WhatsApp getWhatsAppParam() {
+            return Instance;
+        }
+
+        private final String reminderSpeakerTemplateWhatsAppV2 = """
+            Hola {{speaker_name}} 👋
+            
+            Soy {{overseer_name}} de la congregación Veredillas de Torrejón de Ardoz, encantado de saludarte 😀
+            
+            Según nuestro calendario de discursos, te esperamos el *{{talk_date}}* para escuchar el bosquejo *N° {{outline_number}}*, con el título:
+            *{{outline_title}}*
+            Tu congregación es: *{{speaker_congregation}}*
+            
+            La reunión de nuestra congregación comienza a las _{{congregation_time}}_ y la dirección es _{{congregation_address}}_.
+            Puedes consultar la dirección en Google Maps: {{congregation_gmap}}
+            
+            Por favor, *confírmame* lo antes posible:
+            ▶️ Si los *datos son correctos* 📝
+            ➡️ La *canción* que usarás 🎵 (asegúrate que no coincide con ninguna de las de la Atalaya de esa semana 😉)
+            ⏺️ {{speaker_images}}
+            
+            *¡Estamos deseando escucharte!*
+            
+            Un fuerte abrazo 🤗
+            """;
+
+        public static ImmutableMap<String, String> createImmutableMap(String param_name, String param_value) {
+            return ImmutableMap.of("type", "text", "parameter_name", param_name, "text", param_value);
+        }
+
+        private final String speakerCustomImagesTemplateWhatsApp = """
+            Si utilizarás *imágenes* 🏞️ envíamelas por favor a _%s_ o por WhatsApp al hermano de video (%s - %s), con alguna indicación de cuándo ponerlas y quitarlas.
+            """;
+
+        private final String outlineImagesTemplateWhatsApp = """
+            Qué *imágenes* 🏞️ del bosquejo utilizarás (el bosquejo trae alguna/s). Envíame cuáles elegiste a _%s_ o por WhatsApp al hermano de video (%s - %s), con alguna indicación de cuándo ponerlas y quitarlas.
+            """;
 
     }
 
@@ -63,7 +104,6 @@ public class Params {
     @NoArgsConstructor
     public static class Scheduling {
 
-        @Getter
         private static Scheduling Instance;
 
         @PostConstruct
@@ -71,29 +111,42 @@ public class Params {
             Scheduling.Instance = this;
         }
 
-        @Value("${email.from}")
-        public String emailFrom;
+        public static Scheduling getSchedulingParam() {
+            return Instance;
+        }
 
         @Value("${email.from}")
-        public String overseerEmail;
+        private String emailFrom;
+
+        @Value("${email.from}")
+        private String overseerEmail;
 
         @Value("${email.cc}")
-        public String[] emailCC;
+        private String[] emailCC;
+
+        @Value("${video-dept.email}")
+        private String videoDeptEmail;
+
+        @Value("${video-dept.overseer-name}")
+        private String videoDeptOverseerName;
+
+        @Value("${video-dept.overseer-phone}")
+        private String videoDeptOverseerPhone;
 
         @Value("${MEETING-TIME:12:30}")
-        public String meetingTime;
+        private String meetingTime;
 
         @Value("${TALK-OVERSEER}")
-        public String talksOverseer;
+        private String talksOverseer;
 
         @Value("${CONGREGATION-ADDRESS}")
-        public String congregationAddress;
+        private String congregationAddress;
 
         @Value("${CONGREGATION-GMAPS}")
-        public String congregationGMaps;
+        private String congregationGMaps;
 
         @Getter
-        private final String reminderSpeakerTemplateEmail = """
+        private static final String reminderSpeakerTemplateEmail = """
             <p style="font-size:1.5em">Hola %s 👋</p>
             
             <p style="font-size:1.5em">Soy %s de la congregación Veredillas de Torrejón de Ardoz, encantado de saludarte 😀</p>
@@ -112,38 +165,15 @@ public class Params {
             
             <p style="font-size:1.5em">➡️ La canción que usarás.</p>
             
-            <p style="font-size:1.5em">⏺️ Si utilizarás imágenes. En ese caso envíamelas por favor a %s con alguna indicación de cuándo ponerlas y quitarlas. En cuanto las tenga, te confirmo que he recibido el correo.</p>
+            <p style="font-size:1.5em">⏺️ Si utilizarás imágenes. En ese caso envíalas por favor a %s con alguna indicación de cuándo ponerlas y quitarlas. En cuanto las envíes, el hermano del departamento de vídeo te confirmará que ha recibido el correo.</p>
+            
+            <p style="font-size:1.5em;font-weight:bold"">¡Estamos deseando escucharte!</p>
             
             <p style="font-size:1.5em">Un fuerte abrazo 🤗</p>
             """;
 
         @Getter
-        private final String reminderSpeakerTemplateWhatsApp = """
-            Hola %s 👋
-            
-            Soy %s de la congregación Veredillas de Torrejón de Ardoz, encantado de saludarte 😀
-            
-            Según los planes de discursos, te esperamos este %s para escuchar el bosquejo con el tema *N° %s*, con el título
-            *%s*
-            
-            *Congregación: %s*
-            
-            La reunión comienza el domingo a las %s y la dirección es %s.
-            Puedes consultar la dirección en Google Maps: %s
-            
-            Agradecería que si puedes lo antes posible me confirmaras:
-            
-            ▶️ Si los datos son correctos.
-            
-            ➡️ La canción que usarás.
-            
-            ⏺️ Si utilizarás imágenes. En ese caso envíamelas por favor a %s con alguna indicación de cuándo ponerlas y quitarlas. En cuanto las tenga, te confirmo que he recibido el correo.
-            
-            Un fuerte abrazo 🤗
-            """;
-
-        @Getter
-        private final String reminderSpeakerNotInformedTemplate = """
+        private static final String reminderSpeakerNotInformedTemplate = """
             Hola.
             
             He intentado enviar un correo a %s pero no he podido.

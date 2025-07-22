@@ -3,7 +3,6 @@ package org.crontalks.controller;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.crontalks.constants.Messages;
-import org.crontalks.constants.Params;
 import org.crontalks.exception.EmailRecipientNotInformedException;
 import org.crontalks.service.GmailSmtpService;
 import org.crontalks.service.SpeakerService;
@@ -18,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 
 import static org.crontalks.constants.Messages.EMAIL_DEFAULT_SUBJECT;
 import static org.crontalks.constants.Messages.EMAIL_NOT_INFORMED_SUBJECT;
+import static org.crontalks.constants.Params.Scheduling.getSchedulingParam;
 import static org.crontalks.entity.EmailTemplate.emailSpeakerNotInformedTemplate;
 import static org.crontalks.entity.EmailTemplate.emailSpeakerTemplate;
 
@@ -55,7 +55,7 @@ public class GmailController {
 
         } catch (EmailRecipientNotInformedException e) {
             body = emailSpeakerNotInformedTemplate(scheduledTalk);
-            emailService.sendEmail(Params.Scheduling.getInstance().getOverseerEmail(), EMAIL_NOT_INFORMED_SUBJECT, body);
+            emailService.sendEmail(getSchedulingParam().getOverseerEmail(), EMAIL_NOT_INFORMED_SUBJECT, body);
             return new ResponseEntity<>(String.format(Messages.ERROR_SENDING_EMAIL, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 
         } catch (Exception e) {

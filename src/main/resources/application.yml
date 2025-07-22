@@ -31,12 +31,17 @@ email:
   from: ${EMAIL-FROM}
   cc: ${EMAIL-CC}
 
+video-dept:
+  email: ${VIDEO-DEPT-EMAIL}
+  overseer-name: ${VIDEO-DEPT-OVERSEER-NAME}
+  overseer-phone: ${VIDEO-DEPT-OVERSEER-PHONE}
+
 cron:
   schedule: ${CRON-EXPRESSION}
 
 whatsapp:
-  url: ${WHATSAPP_URL}
-  template: ${WHATSAPP_TEMPLATE}
-  token: ${WHATSAPP_TOKEN}
-  phoneNumberId: ${WHATSAPP_PHONE_NUMBER_ID}
-  toPhoneNumber: ${WHATSAPP_TO_PHONE_NUMBER}
+  url: ${WHATSAPP-URL}
+  template: ${WHATSAPP-TEMPLATE}
+  token: ${WHATSAPP-TOKEN}
+  phoneNumberId: ${WHATSAPP-PHONE-NUMBER-ID}
+  testPhoneNumber: ${WHATSAPP-TEST-PHONE-NUMBER}

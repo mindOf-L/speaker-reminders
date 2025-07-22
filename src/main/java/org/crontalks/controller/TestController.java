@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.crontalks.constants.Messages.NOT_IMPLEMENTED_YET;
+import static org.crontalks.constants.Params.Scheduling.getSchedulingParam;
+import static org.crontalks.constants.Params.WhatsApp.getWhatsAppParam;
 import static org.crontalks.entity.EmailTemplate.emailSpeakerTemplate;
 import static org.crontalks.entity.EmailTemplate.whatsAppSpeakerTemplate;
 
