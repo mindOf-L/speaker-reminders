@@ -30,18 +30,18 @@ public class WhatsAppService {
 
     private final SpeakerService speakerService;
 
-    public String sendWhatsAppTest() throws JsonProcessingException, HttpClientErrorException {
+    public String sendWhatsAppTest(String speakerPhone) throws JsonProcessingException, HttpClientErrorException {
         String uri = getWhatsAppParam().getWhatsAppUrl()
             .formatted(getWhatsAppParam().getWhatsAppPhoneNumberId());
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.postForEntity(uri, buildWhatsAppRequest(), String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(uri, buildWhatsAppRequest(speakerPhone), String.class);
         log.info("Response: {}", response.getBody());
 
         return response.getBody();
     }
 
-    private HttpEntity<?> buildWhatsAppRequest() throws JsonProcessingException {
+    private HttpEntity<?> buildWhatsAppRequest(String speakerPhone) throws JsonProcessingException {
         var scheduledTalk = speakerService.getCurrentScheduledTalk();
 
         HttpHeaders headers = new HttpHeaders();
@@ -79,7 +79,7 @@ public class WhatsAppService {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("messaging_product", "whatsapp");
         body.put("recipient_type", "individual");
-        body.put("to", getWhatsAppParam().getWhatsAppTestPhoneNumber());
+        body.put("to", speakerPhone);
         body.put("type", "template");
         body.put("template", template);
 

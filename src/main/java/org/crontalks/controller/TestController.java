@@ -75,7 +75,7 @@ public class TestController {
     @PostMapping("/whatsapp")
     public ResponseEntity<?> sendWhatsAppTest() {
         try {
-            var response = whatsAppService.sendWhatsAppTest();
+            var response = whatsAppService.sendWhatsAppTest(getWhatsAppParam().getWhatsAppTestPhoneNumber());
             log.info("Response: {}", response);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (HttpClientErrorException e) {
