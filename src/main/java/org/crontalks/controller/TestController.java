@@ -1,9 +1,13 @@
 package org.crontalks.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.crontalks.constants.Messages;
 import org.crontalks.service.GmailSmtpService;
 import org.crontalks.service.SpeakerService;
+import org.crontalks.service.WhatsAppService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,19 +15,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
-import static org.crontalks.constants.Messages.NOT_IMPLEMENTED_YET;
+import static org.crontalks.constants.Messages.ERROR_PROCESSING_JSON_WHATSAPP;
+import static org.crontalks.constants.Messages.ERROR_SENDING_WHATSAPP;
 import static org.crontalks.constants.Params.Scheduling.getSchedulingParam;
 import static org.crontalks.constants.Params.WhatsApp.getWhatsAppParam;
 import static org.crontalks.entity.EmailTemplate.emailSpeakerTemplate;
-import static org.crontalks.entity.EmailTemplate.whatsAppSpeakerTemplate;
+import static org.crontalks.entity.WhatsAppTemplate.whatsAppSpeakerTemplate;
 
+@Slf4j
 @RestController
 @RequestMapping("/test")
 @RequiredArgsConstructor
 public class TestController {
 
     private final GmailSmtpService emailService;
+    private final WhatsAppService whatsAppService;
     private final SpeakerService speakerService;
 
     @GetMapping("/email")
@@ -46,12 +54,15 @@ public class TestController {
 
     @PostMapping("/email")
     public ResponseEntity<?> sendMailTest(
-        @RequestParam String to,
+        @RequestParam(required = false) String to,
         @RequestParam String subject,
         @RequestParam(required = false) String[] cc) {
 
         var scheduledTalk = speakerService.getCurrentScheduledTalk();
         var body = emailSpeakerTemplate(scheduledTalk);
+
+        if (StringUtils.isBlank(to))
+            to = getSchedulingParam().getOverseerEmail();
 
         try {
             emailService.sendEmail(to, "TEST! " + subject, cc, body);
@@ -62,8 +73,18 @@ public class TestController {
     }
 
     @PostMapping("/whatsapp")
-    public ResponseEntity<?> sendMailTest(@RequestParam String to) {
-        return new ResponseEntity<>(NOT_IMPLEMENTED_YET, HttpStatus.NOT_IMPLEMENTED);
-    }
+    public ResponseEntity<?> sendWhatsAppTest() {
+        try {
+            var response = whatsAppService.sendWhatsAppTest();
+            log.info("Response: {}", response);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        } catch (HttpClientErrorException e) {
+            var error = String.format(ERROR_SENDING_WHATSAPP, e.getResponseBodyAsString());
+            log.error(error);
+        } catch (JsonProcessingException e) {
+            log.error(ERROR_PROCESSING_JSON_WHATSAPP);
+        }
+
+        return new ResponseEntity<>(ERROR_SENDING_WHATSAPP.formatted(getWhatsAppParam().getWhatsAppTestPhoneNumber()), HttpStatus.BAD_REQUEST);    }
 
 }
