@@ -11,6 +11,8 @@ public class Messages {
 
         NOT_IMPLEMENTED_YET = "Not implemented yet",
 
+        IM_ALIVE = "I'm alive! 🫀",
+
         ERROR_SENDING_EMAIL = "Error sending email: %s",
         ERROR_SENDING_WHATSAPP = "Error sending whatsapp to %s",
         ERROR_GETTING_DATA_FROM_GSHEET = "Error getting data from Google Sheet",
