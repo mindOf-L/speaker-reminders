@@ -77,7 +77,7 @@ public class TestController {
             log.info("Response: {}", response);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (HttpClientErrorException e) {
-            var error = String.format(ERROR_SENDING_WHATSAPP, e.getResponseBodyAsString());
+            var error = String.format(ERROR_SENDING_WHATSAPP, getWhatsAppParam().getWhatsAppTestPhoneNumber());
             log.error(error);
             log.error(e.getMessage());
         }
