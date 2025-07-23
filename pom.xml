@@ -9,9 +9,9 @@
 		<relativePath/>
 	</parent>
 	<groupId>org.crontalks</groupId>
-	<artifactId>reminder</artifactId>
+	<artifactId>speaker-reminder</artifactId>
 	<version>1.0</version>
-	<name>reminder</name>
+	<name>speaker-reminder</name>
 	<description>Automatic reminders for speakers</description>
 
 	<licenses>

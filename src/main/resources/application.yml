@@ -2,17 +2,17 @@ spring:
   application:
     name: speaker-reminders
   mail:
-    host: ${MAIL-HOST}
-    port: ${MAIL-PORT}
-    username: ${MAIL-USERNAME}
-    password: ${MAIL-PASSWORD}
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
-    protocol: ${MAIL-PROTOCOL}
+    protocol: ${MAIL_PROTOCOL}
   batch:
     job:
       enabled: false
@@ -24,26 +24,26 @@ spring:
       path: /api
 
 google:
-  sheet: ${GSHEET-BOOK}
-  speaker-sheet: ${GSHEET-SPEAKER}
+  sheet: ${GSHEET_BOOK}
+  speaker-sheet: ${GSHEET_SPEAKER}
 
 email:
-  from: ${EMAIL-FROM}
-  cc: ${EMAIL-CC}
+  from: ${EMAIL_FROM}
+  cc: ${EMAIL_CC}
 
 video-dept:
-  email: ${VIDEO-DEPT-EMAIL}
-  overseer-name: ${VIDEO-DEPT-OVERSEER-NAME}
-  overseer-phone: ${VIDEO-DEPT-OVERSEER-PHONE}
+  email: ${VIDEO_DEPT_EMAIL}
+  overseer-name: ${VIDEO_DEPT_OVERSEER_NAME}
+  overseer-phone: ${VIDEO_DEPT_OVERSEER_PHONE}
 
 cron:
-  schedule: ${CRON-EXPRESSION}
+  schedule: ${CRON_EXPRESSION}
 
 whatsapp:
-  url: ${WHATSAPP-URL}
+  url: ${WHATSAPP_URL}
   template:
-    first: ${WHATSAPP-TEMPLATE-FIRST}
-    second: ${WHATSAPP-TEMPLATE-SECOND}
-  token: ${WHATSAPP-TOKEN}
-  phoneNumberId: ${WHATSAPP-PHONE-NUMBER-ID}
-  testPhoneNumber: ${WHATSAPP-TEST-PHONE-NUMBER}
+    first: ${WHATSAPP_TEMPLATE_FIRST}
+    second: ${WHATSAPP_TEMPLATE_SECOND}
+  token: ${WHATSAPP_TOKEN}
+  phoneNumberId: ${WHATSAPP_PHONE_NUMBER_ID}
+  testPhoneNumber: ${WHATSAPP_TEST_PHONE_NUMBER}

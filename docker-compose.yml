@@ -1,0 +1,53 @@
+services:
+
+  mvn-build:
+    container_name: speaker-reminder-mvn-build
+    image: maven:3.9.9-eclipse-temurin-24-alpine
+    volumes:
+      - ${M2_DIR:-${HOME}/.m2}:/root/.m2
+      - ./:/usr/src/app
+    working_dir: /usr/src/app
+    command: mvn clean install -DskipTests
+
+  api:
+    container_name: speaker-reminder-api
+    image: openjdk:24-slim
+    #build:
+    #  context: ./
+    #  dockerfile: Dockerfile
+    volumes:
+      - ./target:/opt/app
+    working_dir: /opt/app
+    environment:
+      - ENVIRONMENT_PROFILE=docker
+      - JAVA_OPTS=${JAVA_OPTS}
+      - CONGREGATION_ADDRESS=${CONGREGATION_ADDRESS}
+      - CONGREGATION_GMAPS=${CONGREGATION_GMAPS}
+      - CRON_EXPRESSION=${CRON_EXPRESSION}
+      - EMAIL_CC=${EMAIL_CC}
+      - EMAIL_FROM=${EMAIL_FROM}
+      - GSHEET_BOOK=${GSHEET_BOOK}
+      - GSHEET_SPEAKER=${GSHEET_SPEAKER}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_PROTOCOL=${MAIL_PROTOCOL}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - TALK_OVERSEER=${TALK_OVERSEER}
+      - VIDEO_DEPT_EMAIL=${VIDEO_DEPT_EMAIL}
+      - VIDEO_DEPT_OVERSEER_NAME=${VIDEO_DEPT_OVERSEER_NAME}
+      - VIDEO_DEPT_OVERSEER_PHONE=${VIDEO_DEPT_OVERSEER_PHONE}
+      - WHATSAPP_URL=${WHATSAPP_URL}
+      - WHATSAPP_TOKEN=${WHATSAPP_TOKEN}
+      - WHATSAPP_PHONE_NUMBER_ID=${WHATSAPP_PHONE_NUMBER_ID}
+      - WHATSAPP_TEMPLATE_FIRST=${WHATSAPP_TEMPLATE_FIRST}
+      - WHATSAPP_TEMPLATE_SECOND=${WHATSAPP_TEMPLATE_SECOND}
+      - WHATSAPP_TEST_PHONE_NUMBER=${WHATSAPP_TEST_PHONE_NUMBER}
+    depends_on:
+      mvn-build:
+        condition: service_completed_successfully
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    command: java $JAVA_OPTS -jar /opt/app/speaker-reminder.jar
+    restart: always
