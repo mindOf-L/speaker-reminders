@@ -47,3 +47,6 @@ whatsapp:
   token: ${WHATSAPP_TOKEN}
   phoneNumberId: ${WHATSAPP_PHONE_NUMBER_ID}
   testPhoneNumber: ${WHATSAPP_TEST_PHONE_NUMBER}
+
+server:
+  port: ${TOMCAT_PORT:8080}
