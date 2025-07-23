@@ -1,6 +1,5 @@
 package org.crontalks.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
-import static org.crontalks.constants.Messages.ERROR_PROCESSING_JSON_WHATSAPP;
 import static org.crontalks.constants.Messages.ERROR_SENDING_WHATSAPP;
 import static org.crontalks.constants.Params.Scheduling.getSchedulingParam;
 import static org.crontalks.constants.Params.WhatsApp.getWhatsAppParam;
@@ -81,8 +79,7 @@ public class TestController {
         } catch (HttpClientErrorException e) {
             var error = String.format(ERROR_SENDING_WHATSAPP, e.getResponseBodyAsString());
             log.error(error);
-        } catch (JsonProcessingException e) {
-            log.error(ERROR_PROCESSING_JSON_WHATSAPP);
+            log.error(e.getMessage());
         }
 
         return new ResponseEntity<>(ERROR_SENDING_WHATSAPP.formatted(getWhatsAppParam().getWhatsAppTestPhoneNumber()), HttpStatus.BAD_REQUEST);    }

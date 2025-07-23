@@ -1,7 +1,5 @@
 package org.crontalks.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +28,8 @@ public class WhatsAppService {
 
     private final SpeakerService speakerService;
 
-    public String sendWhatsAppTest(String speakerPhone) throws JsonProcessingException, HttpClientErrorException {
-        String uri = getWhatsAppParam().getWhatsAppUrl()
-            .formatted(getWhatsAppParam().getWhatsAppPhoneNumberId());
+    public String sendWhatsAppTest(String speakerPhone) throws HttpClientErrorException {
+        String uri = getWhatsAppParam().getWhatsAppUrl().formatted(getWhatsAppParam().getWhatsAppPhoneNumberId());
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.postForEntity(uri, buildWhatsAppRequest(speakerPhone), String.class);
@@ -41,7 +38,7 @@ public class WhatsAppService {
         return response.getBody();
     }
 
-    private HttpEntity<?> buildWhatsAppRequest(String speakerPhone) throws JsonProcessingException {
+    private HttpEntity<?> buildWhatsAppRequest(String speakerPhone) {
         var scheduledTalk = speakerService.getCurrentScheduledTalk();
 
         HttpHeaders headers = new HttpHeaders();
@@ -83,6 +80,6 @@ public class WhatsAppService {
         body.put("type", "template");
         body.put("template", template);
 
-        return new HttpEntity<>(new ObjectMapper().writeValueAsString(body), headers);
+        return new HttpEntity<>(body, headers);
     }
 }
