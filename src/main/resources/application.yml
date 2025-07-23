@@ -41,7 +41,9 @@ cron:
 
 whatsapp:
   url: ${WHATSAPP-URL}
-  template: ${WHATSAPP-TEMPLATE}
+  template:
+    first: ${WHATSAPP-TEMPLATE-FIRST}
+    second: ${WHATSAPP-TEMPLATE-SECOND}
   token: ${WHATSAPP-TOKEN}
   phoneNumberId: ${WHATSAPP-PHONE-NUMBER-ID}
   testPhoneNumber: ${WHATSAPP-TEST-PHONE-NUMBER}

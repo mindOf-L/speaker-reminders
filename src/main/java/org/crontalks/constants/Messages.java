@@ -7,6 +7,8 @@ public class Messages {
         EMAIL_NOT_INFORMED_SUBJECT = "Email de discursante no informado: %s",
         EMAIL_SENT_CORRECTLY = "Email sent correctly to %s with this content: %s",
 
+        WHATSAPP_SENT_CORRECTLY = "Whatsapp sent correctly to %s",
+
         NOT_IMPLEMENTED_YET = "Not implemented yet",
 
         ERROR_SENDING_EMAIL = "Error sending email: %s",

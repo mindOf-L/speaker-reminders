@@ -40,8 +40,11 @@ public class Params {
         @Value("${whatsapp.url}")
         private String whatsAppUrl;
 
-        @Value("${whatsapp.template}")
-        private String whatsAppTemplate;
+        @Value("${whatsapp.template.first}")
+        private String whatsAppTemplateNameFirst;
+
+        @Value("${whatsapp.template.second}")
+        private String whatsAppTemplateNameSecond;
 
         @Value("${whatsapp.token}")
         private String whatsAppToken;
