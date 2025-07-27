@@ -12,7 +12,7 @@ public class CronSchedulerService {
 
     private final CronCallerService cronCallerService;
 
-    @Scheduled(cron = "#{@cronProperties.schedule == null ? '0 0 10 ? * MON' : @cronProperties.schedule}")
+    @Scheduled(cron = "#{@cronProperties.schedule}")
     public void weeklyReminderTask() {
         cronCallerService.runInitialAttempt();
     }
