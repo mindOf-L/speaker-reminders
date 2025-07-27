@@ -12,4 +12,10 @@ public class DateFormat {
             .withLocale(Locale.of("es", "ES")));
     }
 
+    public static String formatShortDateTalk(LocalDateTime localDateTime) {
+        return localDateTime
+            .format(DateTimeFormatter.ofPattern("(dd/MMM)")
+                .withLocale(Locale.of("es", "ES")));
+    }
+
 }
