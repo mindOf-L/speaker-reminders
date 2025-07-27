@@ -179,15 +179,15 @@ public class Params {
 
         @Getter
         private static final String reminderSpeakerNotInformedTemplate = """
-            Hola.
+            <p style="font-size:1.5em">Hola.</p>
             
-            He intentado enviar un correo a %s pero no he podido.
+            <p style="font-size:1.5em">He intentado enviar un correo a <strong>%s</strong> pero no he podido.</p>
             
-            Por favor, echa un vistazo a la tabla de Google Sheets y asegúrate de que tengas los datos correctos. Parece que el campo de correo electrónico está vacío o no es válido.
+            <p style="font-size:1.5em">Por favor, echa un vistazo a la tabla de Google Sheets y asegúrate de que tengas los datos correctos. Parece que el campo de correo electrónico está vacío o no es válido.</p>
             
-            Corrige el dato y lo intentaré de nuevo en 24 horas.
+            <p style="font-size:1.5em">Corrige el dato y lo intentaré de nuevo en 24 horas.</p>
             
-            Saludos de tu app!
+            <p style="font-size:1.5em">Saludos de tu app!</p>
             """;
     }
 
