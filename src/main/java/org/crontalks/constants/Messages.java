@@ -6,6 +6,7 @@ public class Messages {
         EMAIL_DEFAULT_SUBJECT = "Torrejón de Ardoz - Veredillas: Recordatorio de discurso público para esta semana",
         EMAIL_NOT_INFORMED_SUBJECT = "Email de discursante no informado: %s",
         EMAIL_SENT_CORRECTLY = "Email sent correctly to %s with this content: %s",
+        EMAIL_TEST_SUBJECT = "Test email",
 
         WHATSAPP_SENT_CORRECTLY = "Whatsapp sent correctly to %s",
 
@@ -16,6 +17,13 @@ public class Messages {
         ERROR_SENDING_EMAIL = "Error sending email: %s",
         ERROR_SENDING_WHATSAPP = "Error sending whatsapp to %s",
         ERROR_GETTING_DATA_FROM_GSHEET = "Error getting data from Google Sheet",
-        ERROR_EMAIL_RECIPIENT_NOT_INFORMED = "Email recipient not informed"
+        ERROR_EMAIL_RECIPIENT_NOT_INFORMED = "Email recipient not informed",
+
+        MESSAGES_FIRST_ATTEMPT_OK = "🟢 Service successfully executed on the first attempt.",
+        MESSAGES_FIRST_ATTEMPT_KO = "❌ Failure on initial attempt: {}",
+        MESSAGES_ATTEMPT_NUM = "🔄 Attempt #{}...",
+        MESSAGES_ATTEMPT_NUM_OK = "🟢 Attempt #{} successful.",
+        MESSAGES_ATTEMPT_NUM_KO = "❌ Fail on attempt #{}: {}",
+        MESSAGES_MAX_ATTEMPT_KO = "🔴 The maximum of 6 attempts was reached. Quitting retries."
     ;
 }

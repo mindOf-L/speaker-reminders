@@ -150,26 +150,32 @@ public class Params {
             
             <p style="font-size:1.5em">Soy %s de la congregación Veredillas de Torrejón de Ardoz, encantado de saludarte 😀</p>
             
-            <p style="font-size:1.5em">Según los planes de discursos, te esperamos este %s para escuchar el bosquejo con el tema <b>N° %s</b>, con el título:</p>
-            <p style="font-size:2em;font-weight:bold">%s</h2>
+            <p style="font-size:1.5em">Según nuestro calendario de discursos, te esperamos el <strong>%s</strong> para escuchar el bosquejo <b>N° %s</b>, con el título:</p>
+            <p style="font-size:2em;font-weight:bold">%s</p>
             
-            <p style="font-size:1.75em;font-weight:bold">Congregación: %s</h3>
+            <p style="font-size:1.75em;font-weight:bold">Tu congregación es: %s</p>
             
-            <p style="font-size:1.5em">La reunión comienza el domingo a las %s y la dirección es %s.<br />
-            Puedes consultar la dirección en Google Maps: %s</p>
+            <p style="font-size:1.5em">La reunión de nuestra congregación comienza a las %s y la dirección es %s.<br />
+            Puedes consultar la dirección en Google Maps <a href="%s">en este enlace</a>.</p>
             
-            <p style="font-size:1.5em">Agradecería que si puedes lo antes posible me confirmaras:</p>
+            <p style="font-size:1.5em">Por favor, <strong>confírmame</strong> lo antes posible:</p>
             
-            <p style="font-size:1.5em">▶️ Si los datos son correctos.</p>
+            <p style="font-size:1.5em">▶️ Si los <strong>datos son correctos</strong> 📝</p>
             
-            <p style="font-size:1.5em">➡️ La canción que usarás.</p>
+            <p style="font-size:1.5em">➡️ La <strong>canción</strong> que usarás 🎵 (asegúrate que no coincide con ninguna de las de la Atalaya de esa semana 😉).</p>
             
-            <p style="font-size:1.5em">⏺️ Si utilizarás imágenes. En ese caso envíalas por favor a %s con alguna indicación de cuándo ponerlas y quitarlas. En cuanto las envíes, el hermano del departamento de vídeo te confirmará que ha recibido el correo.</p>
+            <p style="font-size:1.5em">⏺️ %s</p>
             
             <p style="font-size:1.5em;font-weight:bold"">¡Estamos deseando escucharte!</p>
             
             <p style="font-size:1.5em">Un fuerte abrazo 🤗</p>
             """;
+
+        @Getter
+        private static final String reminderSpeakerTemplateCustomImages = "Si utilizarás <strong>imágenes</strong> 🏞️ envíamelas por favor a <a href=\"mailto:%s?subject=Imágenes de discurso Nº%s en Veredillas %s\">%s</a>, con alguna indicación de cuándo ponerlas y quitarlas.";
+
+        @Getter
+        private static final String reminderSpeakerTemplateOutlineImages = "Qué <strong>imágenes</strong> 🏞️ del bosquejo utilizarás (el bosquejo trae alguna/s). Envíanos cuáles elegiste a <a href=\"mailto:%s?subject=Imágenes de discurso Nº%s en Veredillas %s\">%s</a>, con alguna indicación de cuándo ponerlas y quitarlas.";
 
         @Getter
         private static final String reminderSpeakerNotInformedTemplate = """
