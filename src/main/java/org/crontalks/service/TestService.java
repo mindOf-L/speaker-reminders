@@ -4,12 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.crontalks.constants.Messages;
+import org.crontalks.constants.Params;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import static org.crontalks.constants.Messages.EMAIL_NOT_INFORMED_SUBJECT;
 import static org.crontalks.constants.Messages.EMAIL_TEST_SUBJECT;
+import static org.crontalks.constants.Messages.ERROR_SENDING_EMAIL;
+import static org.crontalks.constants.Messages.ERROR_SENDING_EMAIL_TO;
 import static org.crontalks.constants.Messages.ERROR_SENDING_WHATSAPP;
 import static org.crontalks.constants.Params.Scheduling.getSchedulingParam;
 import static org.crontalks.constants.Params.WhatsApp.getWhatsAppParam;
@@ -45,7 +49,22 @@ public class TestService {
             emailService.sendEmail(to, subject, cc, body);
             return new ResponseEntity<>(String.format(Messages.EMAIL_SENT_CORRECTLY, to, body), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(String.format(Messages.ERROR_SENDING_EMAIL, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(String.format(ERROR_SENDING_EMAIL, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<?> sendWrongMailTest() {
+        var scheduledTalk = speakerService.getCurrentScheduledTalk();
+
+        try {
+            emailService.sendEmail(
+                getSchedulingParam().getOverseerEmail(),
+                String.format(ERROR_SENDING_EMAIL_TO, scheduledTalk.email()),
+                new String[] { "eleaz.rs@gmail.com" },
+                String.format(Params.Scheduling.getReminderSpeakerNotInformedTemplate(), scheduledTalk.name()));
+            return new ResponseEntity<>(String.format(EMAIL_NOT_INFORMED_SUBJECT, scheduledTalk.name()), HttpStatus.NOT_ACCEPTABLE);
+        } catch (Exception e) {
+            return new ResponseEntity<>(String.format(ERROR_SENDING_EMAIL, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

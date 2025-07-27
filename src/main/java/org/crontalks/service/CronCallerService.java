@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import static org.crontalks.constants.Messages.EMAIL_TEST_SUBJECT;
 import static org.crontalks.constants.Messages.MESSAGES_ATTEMPT_NUM;
 import static org.crontalks.constants.Messages.MESSAGES_ATTEMPT_NUM_KO;
 import static org.crontalks.constants.Messages.MESSAGES_ATTEMPT_NUM_OK;
@@ -19,13 +18,11 @@ public class CronCallerService {
 
     private final CronExternalService cronExternalService;
     private final RetryOnMemoryService retryOnMemoryService;
-    private final TestService testService;
 
     public void runInitialAttempt() {
         try {
             cronExternalService.callExternalSystem();
             log.info(MESSAGES_FIRST_ATTEMPT_OK);
-            testService.sendMailTest(null, EMAIL_TEST_SUBJECT, null);
             retryOnMemoryService.resetRetriesCounter();
         } catch (Exception e) {
             log.warn(MESSAGES_FIRST_ATTEMPT_KO, e.getMessage());
