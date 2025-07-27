@@ -10,7 +10,6 @@ import java.util.Random;
 public class CronExternalService {
 
     public void callExternalSystem() throws Exception {
-        // random fail throwing
         if (new Random().nextBoolean())
             log.info("✅ OK!");
         else {
