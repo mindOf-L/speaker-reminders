@@ -1,18 +1,11 @@
 spring:
   application:
     name: speaker-reminders
-  mail:
-    host: ${MAIL_HOST}
-    port: ${MAIL_PORT}
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-    protocol: ${MAIL_PROTOCOL}
+
+  profiles:
+    include:
+      - ${ENVIRONMENT_PROFILE:dev}
+
   batch:
     job:
       enabled: false
