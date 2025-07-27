@@ -59,8 +59,8 @@ public class TestService {
         try {
             emailService.sendEmail(
                 getSchedulingParam().getOverseerEmail(),
-                String.format(ERROR_SENDING_EMAIL_TO, scheduledTalk.email()),
-                new String[] { "eleaz.rs@gmail.com" },
+                String.format(ERROR_SENDING_EMAIL_TO, scheduledTalk.name()),
+                null,
                 String.format(Params.Scheduling.getReminderSpeakerNotInformedTemplate(), scheduledTalk.name()));
             return new ResponseEntity<>(String.format(EMAIL_NOT_INFORMED_SUBJECT, scheduledTalk.name()), HttpStatus.NOT_ACCEPTABLE);
         } catch (Exception e) {
