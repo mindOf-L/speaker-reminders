@@ -1,0 +1,13 @@
+services:
+
+  maildev:
+    image: maildev/maildev
+    container_name: reminder-smtp
+    environment:
+      - MAILDEV_INCOMING_USER=admin
+      - MAILDEV_INCOMING_PASS=mypass
+      - MAILDEV_OUTGOING_USER=admin
+      - MAILDEV_OUTGOING_PASS=mypass
+    ports:
+      - "1025:1025" # smtp server
+      - "1080:1080" # web ui
