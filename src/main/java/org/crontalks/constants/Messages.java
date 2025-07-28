@@ -3,6 +3,8 @@ package org.crontalks.constants;
 public class Messages {
 
     public static final String
+        EMAIL_SENDING = "Sending email to {}}",
+        EMAIL_SENDING_TO_CURRENT = "Sending email to current speaker",
         EMAIL_DEFAULT_SUBJECT = "Torrejón de Ardoz - Veredillas: Recordatorio de discurso público para esta semana",
         EMAIL_NOT_INFORMED_SUBJECT = "Email de discursante no informado o no válido: %s",
         EMAIL_SENT_CORRECTLY = "Email sent correctly to %s with this content: %s",

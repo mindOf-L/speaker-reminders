@@ -16,12 +16,12 @@ import static org.crontalks.constants.Messages.MESSAGES_MAX_ATTEMPT_KO;
 @RequiredArgsConstructor
 public class CronCallerService {
 
-    private final CronExternalService cronExternalService;
+    private final GmailService gmailService;
     private final RetryOnMemoryService retryOnMemoryService;
 
     public void runInitialAttempt() {
         try {
-            cronExternalService.callExternalSystem();
+            gmailService.sendMailCurrent();
             log.info(MESSAGES_FIRST_ATTEMPT_OK);
             retryOnMemoryService.resetRetriesCounter();
         } catch (Exception e) {
@@ -34,7 +34,7 @@ public class CronCallerService {
         if (retryOnMemoryService.shouldRetry()) {
             try {
                 log.info(MESSAGES_ATTEMPT_NUM, retryOnMemoryService.checkActualAttempt() + 1);
-                cronExternalService.callExternalSystem();
+                gmailService.sendMailCurrent();
                 log.info(MESSAGES_ATTEMPT_NUM_OK, retryOnMemoryService.checkActualAttempt() + 1);
                 retryOnMemoryService.resetRetriesCounter();
             } catch (Exception e) {
