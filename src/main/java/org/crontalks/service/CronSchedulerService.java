@@ -12,7 +12,7 @@ public class CronSchedulerService {
 
     private final CronCallerService cronCallerService;
 
-    @Scheduled(cron = "#{@cronProperties.schedule}")
+    @Scheduled(cron = "#{@cronProperties.schedule}", zone = "Europe/Madrid")
     public void weeklyReminderTask() {
         cronCallerService.runInitialAttempt();
     }
