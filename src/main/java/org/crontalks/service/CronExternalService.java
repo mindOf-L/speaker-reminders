@@ -16,7 +16,7 @@ public class CronExternalService {
     private final TestService testService;
 
     public void callExternalSystem() throws Exception {
-        if (new Random().nextBoolean()) {
+        if (getRandomBoolean()) {
             testService.sendMailTest(null, EMAIL_TEST_SUBJECT, null);
             log.info("✅ OK!");
         } else {
@@ -24,6 +24,10 @@ public class CronExternalService {
             testService.sendWrongMailTest();
             throw new Exception("Fail calling external service");
         }
+    }
+    
+    protected boolean getRandomBoolean() {
+        return new Random().nextBoolean();
     }
 
 }
