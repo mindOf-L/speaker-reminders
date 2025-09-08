@@ -5,7 +5,7 @@ LABEL MAINTAINER="mindOf_L"
 WORKDIR /build
 COPY . /build
 # Compile and package the application to an executable JAR
-RUN mvn package -DskipTests
+RUN mvn package
 
 #java
 FROM eclipse-temurin:24-jdk-ubi9-minimal AS backend
