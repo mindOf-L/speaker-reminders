@@ -1,0 +1,25 @@
+# Cron
+cron.schedule: 0 0 10 ? * MON
+
+# Google Sheets
+google.sheet: test-sheet
+google.speaker-sheet: test-speaker-sheet
+
+# WhatsApp (not used in context load, but required by @Value)
+whatsapp.url: http://localhost
+whatsapp.template.first: template1
+whatsapp.template.second: template2
+whatsapp.token: dummy-token
+whatsapp.phoneNumberId: 123456
+whatsapp.testPhoneNumber: +34999999999
+
+# Email scheduling params
+email.from: test@example.com
+email.cc: test.cc1@example.com,test.cc2@example.com
+video-dept.email: video@example.com
+video-dept.overseer-name: Video Overseer
+video-dept.overseer-phone: +34123456789
+MEETING-TIME: 12:30
+TALK-OVERSEER: Overseer Name
+CONGREGATION-ADDRESS: Some Address 123
+CONGREGATION-GMAPS: https://maps.example.com/xyz
