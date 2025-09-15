@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
-@TestPropertySource("classpath:application-test.yml")
+@TestPropertySource(value = "classpath:application-test.yml", properties = "spring.profiles.include=test")
 class ReminderApplicationTests {
 
     @Test
