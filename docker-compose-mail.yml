@@ -2,7 +2,7 @@ services:
 
   maildev:
     image: maildev/maildev
-    container_name: reminder-smtp
+    container_name: speaker-reminder-smtp
     environment:
       - MAILDEV_INCOMING_USER=admin
       - MAILDEV_INCOMING_PASS=mypass

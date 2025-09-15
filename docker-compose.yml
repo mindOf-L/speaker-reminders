@@ -7,7 +7,7 @@ services:
       - ${M2_DIR:-${HOME}/.m2}:/root/.m2
       - ./:/usr/src/app
     working_dir: /usr/src/app
-    command: mvn clean install
+    command: mvn package
 
   api:
     container_name: speaker-reminder-api
@@ -19,7 +19,6 @@ services:
       - ./target:/opt/app
     working_dir: /opt/app
     environment:
-      - ENVIRONMENT_PROFILE=docker
       - JAVA_OPTS=${JAVA_OPTS}
       - CONGREGATION_ADDRESS=${CONGREGATION_ADDRESS}
       - CONGREGATION_GMAPS=${CONGREGATION_GMAPS}
