@@ -146,29 +146,29 @@ public class Params {
 
         @Getter
         private static final String reminderSpeakerTemplateEmail = """
-            <p style="font-size:1.5em">Hola %s 👋</p>
+            <p style="font-size:1.25em">Hola %s 👋</p>
             
-            <p style="font-size:1.5em">Soy %s de la congregación Veredillas de Torrejón de Ardoz, encantado de saludarte 😀</p>
+            <p style="font-size:1.25em">Soy %s de la congregación Veredillas de Torrejón de Ardoz, encantado de saludarte 😀</p>
             
-            <p style="font-size:1.5em">Según nuestro calendario de discursos, te esperamos el <strong>%s</strong> para escuchar el bosquejo <b>N° %s</b>, con el título:</p>
+            <p style="font-size:1.25em">Según nuestro calendario de discursos, te esperamos el <strong>%s</strong> para escuchar el bosquejo <b>N° %s</b>, con el título:</p>
             <p style="font-size:2em;font-weight:bold">%s</p>
             
-            <p style="font-size:1.75em;font-weight:bold">Tu congregación es: %s</p>
+            <p style="font-size:1.25em;font-weight:bold">Tu congregación es: %s</p>
             
-            <p style="font-size:1.5em">La reunión de nuestra congregación comienza a las %s y la dirección es %s.<br />
+            <p style="font-size:1.25em">La reunión de nuestra congregación comienza a las %s y la dirección es %s.<br />
             Puedes consultar la dirección en Google Maps <a href="%s">en este enlace</a>.</p>
             
-            <p style="font-size:1.5em">Por favor, <strong>confírmame</strong> lo antes posible:</p>
+            <p style="font-size:1.25em">Por favor, <strong>confírmame</strong> lo antes posible:</p>
             
-            <p style="font-size:1.5em">▶️ Si los <strong>datos son correctos</strong> 📝</p>
+            <p style="font-size:1.25em">▶️ Si los <strong>datos son correctos</strong> 📝</p>
             
-            <p style="font-size:1.5em">➡️ La <strong>canción</strong> que usarás 🎵 (asegúrate que no coincide con ninguna de las de la Atalaya de esa semana 😉).</p>
+            <p style="font-size:1.25em">➡️ La <strong>canción</strong> que usarás 🎵 (asegúrate que no coincide con ninguna de las de la Atalaya de esa semana 😉).</p>
             
-            <p style="font-size:1.5em">⏺️ %s</p>
+            <p style="font-size:1.25em">⏺️ %s</p>
             
-            <p style="font-size:1.5em;font-weight:bold"">¡Estamos deseando escucharte!</p>
+            <p style="font-size:1.25em;font-weight:bold"">¡Estamos deseando escucharte!</p>
             
-            <p style="font-size:1.5em">Un fuerte abrazo 🤗</p>
+            <p style="font-size:1.25em">Un fuerte abrazo 🤗</p>
             """;
 
         @Getter
@@ -179,15 +179,15 @@ public class Params {
 
         @Getter
         private static final String reminderSpeakerNotInformedTemplate = """
-            <p style="font-size:1.5em">Hola.</p>
+            <p style="font-size:1.25em">Hola.</p>
             
-            <p style="font-size:1.5em">He intentado enviar un correo a <strong>%s</strong> pero no he podido.</p>
+            <p style="font-size:1.25em">He intentado enviar un correo a <strong>%s</strong> pero no he podido.</p>
             
-            <p style="font-size:1.5em">Por favor, echa un vistazo a la tabla de Google Sheets y asegúrate de que tengas los datos correctos. Parece que el campo de correo electrónico está vacío o no es válido.</p>
+            <p style="font-size:1.25em">Por favor, echa un vistazo a la tabla de Google Sheets y asegúrate de que tengas los datos correctos. Parece que el campo de correo electrónico está vacío o no es válido.</p>
             
-            <p style="font-size:1.5em">Corrige el dato y lo intentaré de nuevo en 24 horas.</p>
+            <p style="font-size:1.25em">Corrige el dato y lo intentaré de nuevo en 24 horas.</p>
             
-            <p style="font-size:1.5em">Saludos de tu app!</p>
+            <p style="font-size:1.25em">Saludos de tu app!</p>
             """;
     }
 
