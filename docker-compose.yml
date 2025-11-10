@@ -2,7 +2,7 @@ services:
 
   mvn-build:
     container_name: speaker-reminder-mvn-build
-    image: maven:3.9.9-eclipse-temurin-24-alpine
+    image: maven:3.9.11-eclipse-temurin-25-alpine
     volumes:
       - ${M2_DIR:-${HOME}/.m2}:/root/.m2
       - ./:/usr/src/app
@@ -11,7 +11,7 @@ services:
 
   api:
     container_name: speaker-reminder-api
-    image: openjdk:24-slim
+    image: eclipse-temurin:25-jdk-ubi10-minimal
     #build:
     #  context: ./
     #  dockerfile: Dockerfile

@@ -1,5 +1,5 @@
 #maven
-FROM maven:3.9.9-eclipse-temurin-24-alpine AS maven
+FROM maven:3.9.11-eclipse-temurin-25-alpine AS maven
 LABEL MAINTAINER="mindOf_L"
 
 WORKDIR /build
@@ -7,7 +7,7 @@ COPY . /build
 RUN mvn package
 
 #java
-FROM eclipse-temurin:24-jdk-ubi9-minimal AS backend
+FROM eclipse-temurin:25-jdk-ubi10-minimal AS backend
 ENV JAVA_OPTS "-XX:MaxRAMPercentage=70 -Djava.security.egd=file:/dev/./urandom"
 ARG JAR_FILE=speaker-reminder.jar
 
