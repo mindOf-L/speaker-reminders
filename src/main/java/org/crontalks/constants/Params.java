@@ -162,9 +162,11 @@ public class Params {
             
             <p style="font-size:1.25em">▶️ Si los <strong>datos son correctos</strong> 📝</p>
             
-            <p style="font-size:1.25em">➡️ La <strong>canción</strong> que usarás 🎵 (asegúrate que no coincide con ninguna de las de la Atalaya de esa semana 😉).</p>
+            <p style="font-size:1.25em">➡️ La <strong>canción</strong> que usarás 🎵 (<strong>asegúrate que no coincide</strong> con ninguna de las de la Atalaya de esa semana 😉).</p>
             
             <p style="font-size:1.25em">⏺️ %s</p>
+            
+            <p style="font-size:1.25em">⏰ Si te quedarás hasta el final para hacer la oración final</p>
             
             <p style="font-size:1.25em;font-weight:bold"">¡Estamos deseando escucharte!</p>
             
