@@ -8,6 +8,7 @@ public class Messages {
         EMAIL_DEFAULT_SUBJECT = "Torrejón de Ardoz - Veredillas: Recordatorio de discurso público para esta semana",
         EMAIL_NOT_INFORMED_SUBJECT = "Email de discursante no informado o no válido: %s",
         EMAIL_SENT_CORRECTLY = "Email sent correctly to %s with this content: %s",
+        EMAIL_SENT = "Email sent",
         EMAIL_TEST_SUBJECT = "Test email",
 
         WHATSAPP_SENT_CORRECTLY = "Whatsapp sent correctly to %s",

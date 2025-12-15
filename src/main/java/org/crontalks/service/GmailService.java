@@ -50,6 +50,7 @@ public class GmailService {
         try {
             log.info(EMAIL_SENDING_TO_CURRENT);
             emailService.sendEmail(scheduledTalk.email(), EMAIL_DEFAULT_SUBJECT, body);
+            log.info(Messages.EMAIL_SENT);
             return new ResponseEntity<>(String.format(Messages.EMAIL_SENT_CORRECTLY, scheduledTalk.email(), body), HttpStatus.OK);
 
         } catch (EmailRecipientNotInformedException e) {
