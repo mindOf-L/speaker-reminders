@@ -164,7 +164,7 @@ public class Params {
             
             <p style="font-size:1.25em">➡️ La <strong>canción</strong> que usarás 🎵 (<strong>asegúrate que no coincide</strong> con ninguna de las de la Atalaya de esa semana 😉).</p>
             
-            <p style="font-size:1.25em">⏺️ %s</p>
+            <p style="font-size:1.25em">⏺️ %s %s</p>
             
             <p style="font-size:1.25em">⏰ Si te quedarás hasta el final para hacer la oración final</p>
             
@@ -178,6 +178,9 @@ public class Params {
 
         @Getter
         private static final String reminderSpeakerTemplateOutlineImages = "Qué <strong>imágenes</strong> 🏞️ del bosquejo utilizarás (el bosquejo trae alguna/s). Envíanos cuáles elegiste a <a href=\"mailto:%s?subject=Imágenes de discurso Nº%s en Veredillas %s\">%s</a>, con alguna indicación de cuándo ponerlas y quitarlas.";
+
+        @Getter
+        private static final String reminderSpeakerTemplateOutlineVideos = "Además, el bosquejo tiene al menos 1 vídeo. Por favor, indícanos en qué momento darás paso al vídeo.";
 
         @Getter
         private static final String reminderSpeakerNotInformedTemplate = """

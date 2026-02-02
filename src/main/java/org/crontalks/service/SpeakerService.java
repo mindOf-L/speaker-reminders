@@ -14,7 +14,7 @@ public class SpeakerService {
     private final GSheetService gSheetService;
 
     public ScheduledTalk getCurrentScheduledTalk() {
-        final String speakerSheetRange = "A1:H";
+        final String speakerSheetRange = "A1:I";
         var speakerThisWeek = gSheetService.getSheetValues(
             getGSheetsParam().getThisWeekSpeaker(), speakerSheetRange, true);
 

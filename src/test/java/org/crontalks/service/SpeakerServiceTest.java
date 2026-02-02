@@ -45,7 +45,8 @@ public class SpeakerServiceTest {
             "Test Outline", // outline title
             "+1234567890", // phone number
             "john@example.com", // email
-            "true" // has images
+            "true", // has images
+            "false" // has video
         );
         List<List<Object>> sheetData = Collections.singletonList(rowData);
 

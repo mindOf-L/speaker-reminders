@@ -26,7 +26,8 @@ public class EmailTemplate {
             scheduledTalk.localDateTime().format(DateTimeFormatter.ofPattern("HH:mm")), // meeting time
             getSchedulingParam().getCongregationAddress(), // congregation address
             getSchedulingParam().getCongregationGMaps(), // congregation google maps
-            processTemplateImages(scheduledTalk)
+            processTemplateImages(scheduledTalk),
+            processTemplateVideo(scheduledTalk)
         );
     }
 
@@ -39,14 +40,20 @@ public class EmailTemplate {
     private static String processTemplateImages(ScheduledTalk scheduledTalk) {
         return scheduledTalk.outlineHasImages()
             ? Params.Scheduling.getReminderSpeakerTemplateOutlineImages().formatted(
-            getSchedulingParam().getVideoDeptEmail(), // video dept email
-                scheduledTalk.outlineNumber(), // outline number for email subject
-                formatShortDateTalk(scheduledTalk.localDateTime()), // short date for email subject
-                getSchedulingParam().getVideoDeptEmail()) // video dept email)
+            getSchedulingParam().getVideoDeptEmail(),
+                scheduledTalk.outlineNumber(),
+                formatShortDateTalk(scheduledTalk.localDateTime()),
+                getSchedulingParam().getVideoDeptEmail())
             : Params.Scheduling.getReminderSpeakerTemplateCustomImages().formatted(
-            getSchedulingParam().getVideoDeptEmail(), // video dept email
-                scheduledTalk.outlineNumber(), // outline number for email subject
-                formatShortDateTalk(scheduledTalk.localDateTime()), // short date for email subject
-                getSchedulingParam().getVideoDeptEmail()); // video dept email)
+            getSchedulingParam().getVideoDeptEmail(),
+                scheduledTalk.outlineNumber(),
+                formatShortDateTalk(scheduledTalk.localDateTime()),
+                getSchedulingParam().getVideoDeptEmail());
+    }
+
+    private static String processTemplateVideo(ScheduledTalk scheduledTalk) {
+        return scheduledTalk.outlineHasVideo()
+            ? Params.Scheduling.getReminderSpeakerTemplateOutlineVideos()
+            : "";
     }
 }
