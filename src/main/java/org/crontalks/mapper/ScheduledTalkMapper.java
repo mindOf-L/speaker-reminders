@@ -25,7 +25,7 @@ public class ScheduledTalkMapper {
             .outlineNumber(mapToInt(row.get(3)))
             .outlineTitle(mapToString(row.get(4)))
             .phoneNumber(mapToString(row.get(5)))
-            .email(mapToString(row.size() > 6 ? row.get(6) : ""))
+            .email(mapToString(row.get(6)))
             .outlineHasImages(Boolean.parseBoolean(mapToString(row.get(7))))
             .outlineHasVideo(Boolean.parseBoolean(mapToString(row.get(8))))
             .build();
