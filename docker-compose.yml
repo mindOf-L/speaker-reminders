@@ -4,7 +4,7 @@ services:
     container_name: speaker-reminder-mvn-build
     image: maven:3.9.11-eclipse-temurin-25-alpine
     volumes:
-      - ${M2_DIR:-${HOME}/.m2}:/root/.m2
+      - ${HOME}/.m2:/root/.m2
       - ./:/usr/src/app
     working_dir: /usr/src/app
     command: mvn package
