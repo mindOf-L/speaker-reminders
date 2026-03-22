@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.0.2</version>
+		<version>4.0.4</version>
 		<relativePath/>
 	</parent>
 	<groupId>org.crontalks</groupId>
@@ -35,15 +35,15 @@
 	<properties>
 		<!-- build -->
 		<java.version>25</java.version>
-		<maven-compiler.version>3.14.1</maven-compiler.version>
+		<maven-compiler.version>3.15.0</maven-compiler.version>
 		<!-- map -->
-		<lombok.version>1.18.42</lombok.version>
-		<org-json.version>20250517</org-json.version>
+		<lombok.version>1.18.44</lombok.version>
+		<org-json.version>20251224</org-json.version>
 		<!-- google -->
 		<google-api.version>2.8.1</google-api.version>
-		<google-sheets.version>v4-rev20250616-2.0.0</google-sheets.version>
+		<google-sheets.version>v4-rev20260213-2.0.0</google-sheets.version>
 		<!-- util -->
-		<commons-lang3.version>3.19.0</commons-lang3.version>
+		<commons-lang3.version>3.20.0</commons-lang3.version>
 		<commons-collections.version>4.5.0</commons-collections.version>
 		<commons-io.version>2.21.0</commons-io.version>
 		<gson.version>2.13.2</gson.version>
