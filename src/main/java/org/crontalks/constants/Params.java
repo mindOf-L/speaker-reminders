@@ -174,6 +174,24 @@ public class Params {
             """;
 
         @Getter
+        private static final String emailEmptyData = """
+            <p style="font-size:1.25em">Hola!!! 👋</p>
+            
+            <p style="font-size:1.25em">Revisa la hoja, parece que NO hay datos para esta semana!</p>
+            
+            <p style="font-size:1.25em">Recuerda que intentaré hacer el envío de nuevo mañana, habrá 6 reintentos en total.</p>
+            """;
+
+        @Getter
+        private static final String emailSomeEmptyData = """
+            <p style="font-size:1.25em">Hola!!! 👋</p>
+            
+            <p style="font-size:1.25em">Revisa la hoja, parece que algunos datos NO están puestos para esta semana!</p>
+            
+            <p style="font-size:1.25em">Recuerda que intentaré hacer el envío de nuevo mañana, habrá 6 reintentos en total.</p>
+            """;
+
+        @Getter
         private static final String reminderSpeakerTemplateCustomImages = "Si utilizarás <strong>imágenes</strong> 🏞️ envíamelas por favor a <a href=\"mailto:%s?subject=Imágenes de discurso Nº%s en Veredillas %s\">%s</a>, con alguna indicación de cuándo ponerlas y quitarlas.";
 
         @Getter

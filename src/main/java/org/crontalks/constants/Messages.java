@@ -17,6 +17,9 @@ public class Messages {
 
         IM_ALIVE = "I'm alive! 🫀",
 
+        WARNING_SENDING_EMAIL_EMPTY_DATA = "⚠️ Error enviando email: no hay datos!!",
+        WARNING_SENDING_EMAIL_SOME_EMPTY_DATA = "⚠️ Error enviando email: faltan algunos datos!!",
+
         ERROR_SENDING_EMAIL = "Error sending email: %s",
         ERROR_SENDING_EMAIL_TO = "Error sending email to %s",
         ERROR_SENDING_WHATSAPP = "Error sending whatsapp to %s",

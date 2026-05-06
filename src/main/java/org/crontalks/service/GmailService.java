@@ -16,7 +16,11 @@ import static org.crontalks.constants.Messages.EMAIL_DEFAULT_SUBJECT;
 import static org.crontalks.constants.Messages.EMAIL_NOT_INFORMED_SUBJECT;
 import static org.crontalks.constants.Messages.EMAIL_SENDING;
 import static org.crontalks.constants.Messages.EMAIL_SENDING_TO_CURRENT;
+import static org.crontalks.constants.Messages.WARNING_SENDING_EMAIL_EMPTY_DATA;
+import static org.crontalks.constants.Messages.WARNING_SENDING_EMAIL_SOME_EMPTY_DATA;
 import static org.crontalks.constants.Params.Scheduling.getSchedulingParam;
+import static org.crontalks.entity.EmailTemplate.emailEmptyData;
+import static org.crontalks.entity.EmailTemplate.emailSomeEmptyData;
 import static org.crontalks.entity.EmailTemplate.emailSpeakerNotInformedTemplate;
 import static org.crontalks.entity.EmailTemplate.emailSpeakerTemplate;
 
@@ -60,6 +64,18 @@ public class GmailService {
 
         } catch (Exception e) {
             return new ResponseEntity<>(String.format(Messages.ERROR_SENDING_EMAIL, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public void sendMailCurrentFails() {
+        try {
+            if (speakerService.getCurrentScheduledTalk() == null) {
+                emailService.sendEmail(getSchedulingParam().getOverseerEmail(), WARNING_SENDING_EMAIL_EMPTY_DATA, emailEmptyData());
+            } else {
+                emailService.sendEmail(getSchedulingParam().getOverseerEmail(), WARNING_SENDING_EMAIL_SOME_EMPTY_DATA, emailSomeEmptyData());
+            }
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
     }
 

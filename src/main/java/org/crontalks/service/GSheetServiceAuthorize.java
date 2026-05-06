@@ -8,11 +8,11 @@ import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -31,6 +31,7 @@ public class GSheetServiceAuthorize {
     private String credentialsResource;
 
     private final ResourceLoader resourceLoader;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public GSheetServiceAuthorize(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
@@ -48,9 +49,10 @@ public class GSheetServiceAuthorize {
 
     private InputStream getFromResource() throws IOException {
         try {
-            new JSONObject(credentialsResource);
+            objectMapper.readTree(credentialsResource);
             return IOUtils.toInputStream(credentialsResource, StandardCharsets.UTF_8);
-        } catch (JSONException e) {
+
+        } catch (JacksonException e) {
             return credentialsResource.contains("classpath:")
                 ? resourceLoader.getResource(credentialsResource).getInputStream()
                 : new FileInputStream(credentialsResource);

@@ -56,4 +56,12 @@ public class EmailTemplate {
             ? Params.Scheduling.getReminderSpeakerTemplateOutlineVideos()
             : "";
     }
+
+    public static String emailEmptyData() {
+        return Params.Scheduling.getEmailEmptyData();
+    }
+
+    public static String emailSomeEmptyData() {
+        return Params.Scheduling.getEmailSomeEmptyData();
+    }
 }

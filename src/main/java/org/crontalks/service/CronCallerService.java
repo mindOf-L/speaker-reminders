@@ -25,6 +25,7 @@ public class CronCallerService {
             log.info(MESSAGES_FIRST_ATTEMPT_OK);
             retryOnMemoryService.resetRetriesCounter();
         } catch (Exception e) {
+            gmailService.sendMailCurrentFails();
             log.warn(MESSAGES_FIRST_ATTEMPT_KO, e.getMessage());
             retryOnMemoryService.registerFailAttempt();
         }
