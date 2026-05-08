@@ -2,6 +2,7 @@ package org.crontalks.service;
 
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import org.crontalks.constants.GSheetsProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,11 +59,11 @@ public class GSheetServiceTest {
         when(get.execute()).thenReturn(valueRange);
 
         // Create a new instance with our mocks
-        org.crontalks.constants.Params.GSheets gSheets = mock(org.crontalks.constants.Params.GSheets.class);
-        when(gSheets.getSheet()).thenReturn(TEST_GSHEET_BOOK);
+        GSheetsProperties gSheetsProperties = mock(GSheetsProperties.class);
+        when(gSheetsProperties.sheet()).thenReturn(TEST_GSHEET_BOOK);
         
         // Manually inject the mocks since we need to call the constructor
-        gSheetService = new GSheetService(gSheetServiceAuthorize, gSheets);
+        gSheetService = new GSheetService(gSheetServiceAuthorize, gSheetsProperties);
     }
 
     @Test

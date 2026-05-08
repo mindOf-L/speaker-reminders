@@ -5,8 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
-
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -28,7 +26,7 @@ public class CronCallerServiceTest {
 
     @Test
     void runInitialAttempt_ShouldResetRetriesCounter_WhenSuccessful() throws Exception {
-        doReturn(ResponseEntity.ok("Success")).when(gmailService).sendMailCurrent();
+        doReturn("Success").when(gmailService).sendMailCurrent();
 
         cronCallerService.runInitialAttempt();
 
@@ -62,7 +60,7 @@ public class CronCallerServiceTest {
     void runNextAttempt_ShouldResetRetriesCounter_WhenSuccessful() throws Exception {
         when(retryOnMemoryService.shouldRetry()).thenReturn(true);
         when(retryOnMemoryService.checkActualAttempt()).thenReturn(1);
-        doReturn(ResponseEntity.ok("Success")).when(gmailService).sendMailCurrent();
+        doReturn("Success").when(gmailService).sendMailCurrent();
 
         cronCallerService.runNextAttempt();
 

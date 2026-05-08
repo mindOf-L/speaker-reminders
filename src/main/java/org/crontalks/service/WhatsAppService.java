@@ -1,8 +1,9 @@
 package org.crontalks.service;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.crontalks.constants.SchedulingProperties;
+import org.crontalks.constants.WhatsAppProperties;
 import org.crontalks.entity.ScheduledTalk;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -10,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedHashMap;
@@ -17,9 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.crontalks.constants.Messages.WHATSAPP_SENT_CORRECTLY;
-import static org.crontalks.constants.Params.Scheduling.getSchedulingParam;
-import static org.crontalks.constants.Params.WhatsApp.createImmutableMap;
-import static org.crontalks.constants.Params.WhatsApp.getWhatsAppParam;
 import static org.crontalks.util.DateFormat.formatLongDateTalk;
 import static org.crontalks.util.StringSplitter.splitName;
 
@@ -29,38 +29,47 @@ import static org.crontalks.util.StringSplitter.splitName;
 public class WhatsAppService {
 
     private final SpeakerService speakerService;
+    private final RestTemplate restTemplate;
+    private final WhatsAppProperties whatsAppProperties;
+    private final SchedulingProperties schedulingProperties;
 
-    public String sendWhatsAppTest(String speakerPhone) throws HttpClientErrorException {
+    public String sendWhatsAppTest(String speakerPhone) throws RestClientException {
         var scheduledTalk = speakerService.getCurrentScheduledTalk();
 
-        String uri = getWhatsAppParam().getWhatsAppUrl().formatted(getWhatsAppParam().getWhatsAppPhoneNumberId());
+        String uri = whatsAppProperties.getWhatsAppUrl().formatted(whatsAppProperties.getWhatsAppPhoneNumberId());
 
-        RestTemplate restTemplate = new RestTemplate();
-        // first message
-        var componentsFirstMessage = setComponentsForFirstTemplate(scheduledTalk);
-        HttpEntity<?> requestFirstMessage = buildWhatsAppRequest(speakerPhone, getWhatsAppParam().getWhatsAppTemplateNameFirst(),componentsFirstMessage);
-        ResponseEntity<String> responseFirst = restTemplate.postForEntity(uri, requestFirstMessage, String.class);
-        log.info("Response: {}", responseFirst.getBody());
+        try {
+            // first message
+            var componentsFirstMessage = setComponentsForFirstTemplate(scheduledTalk);
+            HttpEntity<?> requestFirstMessage = buildWhatsAppRequest(speakerPhone, whatsAppProperties.getWhatsAppTemplateNameFirst(), componentsFirstMessage);
+            ResponseEntity<String> responseFirst = restTemplate.postForEntity(uri, requestFirstMessage, String.class);
+            log.info("Response First: {}", responseFirst.getBody());
 
-        // second message
-        // first message
-        var componentsSecondMessage = setComponentsForSecondTemplate(scheduledTalk);
-        HttpEntity<?> requestSecondMessage = buildWhatsAppRequest(speakerPhone, getWhatsAppParam().getWhatsAppTemplateNameSecond(), componentsSecondMessage);
-        ResponseEntity<String> responseSecond = restTemplate.postForEntity(uri, requestSecondMessage, String.class);
-        log.info("Response: {}", responseSecond.getBody());
+            // second message
+            var componentsSecondMessage = setComponentsForSecondTemplate(scheduledTalk);
+            HttpEntity<?> requestSecondMessage = buildWhatsAppRequest(speakerPhone, whatsAppProperties.getWhatsAppTemplateNameSecond(), componentsSecondMessage);
+            ResponseEntity<String> responseSecond = restTemplate.postForEntity(uri, requestSecondMessage, String.class);
+            log.info("Response Second: {}", responseSecond.getBody());
 
-        return String.format(WHATSAPP_SENT_CORRECTLY, speakerPhone);
+            return String.format(WHATSAPP_SENT_CORRECTLY, speakerPhone);
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            log.error("Error from WhatsApp API: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            throw e;
+        } catch (RestClientException e) {
+            log.error("Network or timeout error calling WhatsApp API: {}", e.getMessage());
+            throw e;
+        }
     }
 
-    private HttpEntity<?> buildWhatsAppRequest(String speakerPhone, String templateName, ImmutableMap<?,?> components) {
+    private HttpEntity<?> buildWhatsAppRequest(String speakerPhone, String templateName, Map<?, ?> components) {
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(getWhatsAppParam().getWhatsAppToken());
+        headers.setBearerAuth(whatsAppProperties.getWhatsAppToken());
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, Object> template = new LinkedHashMap<>();
         template.put("name", templateName);
-        template.put("language", ImmutableMap.of("code", "es"));
+        template.put("language", Map.of("code", "es"));
         template.put("components", List.of(components));
 
         Map<String, Object> body = new LinkedHashMap<>();
@@ -73,35 +82,35 @@ public class WhatsAppService {
         return new HttpEntity<>(body, headers);
     }
 
-    private ImmutableMap<String, Object> setComponentsForFirstTemplate(ScheduledTalk scheduledTalk) {
-        return ImmutableMap.of(
+    private Map<String, Object> setComponentsForFirstTemplate(ScheduledTalk scheduledTalk) {
+        return Map.of(
             "type", "body",
             "parameters", List.of(
-                createImmutableMap("speaker_name", splitName(scheduledTalk.name())),
-                createImmutableMap("overseer_name", getSchedulingParam().getTalksOverseer()),
-                createImmutableMap("talk_date", formatLongDateTalk(scheduledTalk.localDateTime())),
-                createImmutableMap("outline_number", String.valueOf(scheduledTalk.outlineNumber())),
-                createImmutableMap("outline_title", scheduledTalk.outlineTitle()),
-                createImmutableMap("speaker_congregation", scheduledTalk.congregation()),
-                createImmutableMap("congregation_time", getSchedulingParam().getMeetingTime()),
-                createImmutableMap("congregation_address", getSchedulingParam().getCongregationAddress()),
-                createImmutableMap("congregation_gmap", getSchedulingParam().getCongregationGMaps())
+                whatsAppProperties.createMap("speaker_name", splitName(scheduledTalk.name())),
+                whatsAppProperties.createMap("overseer_name", schedulingProperties.getTalksOverseer()),
+                whatsAppProperties.createMap("talk_date", formatLongDateTalk(scheduledTalk.localDateTime())),
+                whatsAppProperties.createMap("outline_number", String.valueOf(scheduledTalk.outlineNumber())),
+                whatsAppProperties.createMap("outline_title", scheduledTalk.outlineTitle()),
+                whatsAppProperties.createMap("speaker_congregation", scheduledTalk.congregation()),
+                whatsAppProperties.createMap("congregation_time", schedulingProperties.getMeetingTime()),
+                whatsAppProperties.createMap("congregation_address", schedulingProperties.getCongregationAddress()),
+                whatsAppProperties.createMap("congregation_gmap", schedulingProperties.getCongregationGMaps())
             )
         );
     }
 
-    private ImmutableMap<String, Object> setComponentsForSecondTemplate(ScheduledTalk scheduledTalk) {
+    private Map<String, Object> setComponentsForSecondTemplate(ScheduledTalk scheduledTalk) {
         String speakerImages = String.format(scheduledTalk.outlineHasImages()
-                ? getWhatsAppParam().getOutlineImagesTemplateWhatsApp()
-                : getWhatsAppParam().getSpeakerCustomImagesTemplateWhatsApp(),
-            getSchedulingParam().getVideoDeptEmail(),
-            getSchedulingParam().getVideoDeptOverseerName(),
-            getSchedulingParam().getVideoDeptOverseerPhone());
+                ? whatsAppProperties.getOutlineImagesTemplateWhatsApp()
+                : whatsAppProperties.getSpeakerCustomImagesTemplateWhatsApp(),
+            schedulingProperties.getVideoDeptEmail(),
+            schedulingProperties.getVideoDeptOverseerName(),
+            schedulingProperties.getVideoDeptOverseerPhone());
 
-        return ImmutableMap.of(
+        return Map.of(
             "type", "body",
             "parameters", List.of(
-                createImmutableMap("speaker_images", speakerImages)
+                whatsAppProperties.createMap("speaker_images", speakerImages)
             )
         );
     }

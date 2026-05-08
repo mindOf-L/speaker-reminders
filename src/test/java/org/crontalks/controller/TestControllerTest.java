@@ -7,9 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -49,7 +47,7 @@ public class TestControllerTest {
 
     @Test
     void getMailTest_ShouldReturnEmailTemplate() throws Exception {
-        ResponseEntity<String> response = new ResponseEntity<>(TEST_RESPONSE, HttpStatus.OK);
+        String response = TEST_RESPONSE;
         doReturn(response).when(testService).getMailTest();
 
         mockMvc.perform(get(EMAIL_TEST_ENDPOINT)
@@ -62,7 +60,7 @@ public class TestControllerTest {
 
     @Test
     void sendMailTest_WithAllParameters_ShouldSendEmail() throws Exception {
-        ResponseEntity<String> response = new ResponseEntity<>(TEST_RESPONSE, HttpStatus.OK);
+        String response = TEST_RESPONSE;
         doReturn(response).when(testService).sendMailTest(anyString(), anyString(), any());
 
         mockMvc.perform(post(EMAIL_TEST_ENDPOINT)
@@ -78,7 +76,7 @@ public class TestControllerTest {
 
     @Test
     void sendMailTest_WithoutToParameter_ShouldUseDefaultEmail() throws Exception {
-        ResponseEntity<String> response = new ResponseEntity<>(TEST_RESPONSE, HttpStatus.OK);
+        String response = TEST_RESPONSE;
         doReturn(response).when(testService).sendMailTest(isNull(), anyString(), any());
 
         mockMvc.perform(post(EMAIL_TEST_ENDPOINT)
@@ -93,7 +91,7 @@ public class TestControllerTest {
 
     @Test
     void sendMailTest_WithoutCcParameter_ShouldSendWithoutCc() throws Exception {
-        ResponseEntity<String> response = new ResponseEntity<>(TEST_RESPONSE, HttpStatus.OK);
+        String response = TEST_RESPONSE;
         doReturn(response).when(testService).sendMailTest(anyString(), anyString(), isNull());
 
         mockMvc.perform(post(EMAIL_TEST_ENDPOINT)
@@ -108,7 +106,7 @@ public class TestControllerTest {
 
     @Test
     void getWhatsAppTest_ShouldReturnWhatsAppTemplate() throws Exception {
-        ResponseEntity<String> response = new ResponseEntity<>(TEST_RESPONSE, HttpStatus.OK);
+        String response = TEST_RESPONSE;
         doReturn(response).when(testService).getWhatsAppTest();
 
         mockMvc.perform(get(WHATSAPP_TEST_ENDPOINT)
@@ -121,7 +119,7 @@ public class TestControllerTest {
 
     @Test
     void sendWhatsAppTest_ShouldSendWhatsAppMessage() throws Exception {
-        ResponseEntity<String> response = new ResponseEntity<>(TEST_RESPONSE, HttpStatus.CREATED);
+        String response = TEST_RESPONSE;
         doReturn(response).when(testService).sendWhatsAppTest();
 
         mockMvc.perform(post(WHATSAPP_TEST_ENDPOINT)

@@ -1,27 +1,28 @@
 package org.crontalks.service;
 
 import lombok.RequiredArgsConstructor;
+import org.crontalks.constants.GSheetsProperties;
 import org.crontalks.entity.ScheduledTalk;
 import org.crontalks.mapper.ScheduledTalkMapper;
 import org.springframework.stereotype.Service;
-
-import static org.crontalks.constants.Params.GSheets.getGSheetsParam;
 
 @Service
 @RequiredArgsConstructor
 public class SpeakerService {
 
     private final GSheetService gSheetService;
+    private final GSheetsProperties gSheetsProperties;
+    private final ScheduledTalkMapper scheduledTalkMapper;
 
     public ScheduledTalk getCurrentScheduledTalk() {
         final String speakerSheetRange = "A1:I";
         var speakerThisWeek = gSheetService.getSheetValues(
-            getGSheetsParam().getThisWeekSpeaker(), speakerSheetRange, true);
+            gSheetsProperties.speakerSheet(), speakerSheetRange, true);
 
         if (speakerThisWeek.isEmpty())
             return null;
 
-        return ScheduledTalkMapper.toScheduledTalk(speakerThisWeek.getFirst());
+        return scheduledTalkMapper.toScheduledTalk(speakerThisWeek.getFirst());
     }
 
 }

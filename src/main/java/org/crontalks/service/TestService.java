@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.crontalks.constants.Messages;
-import org.crontalks.constants.Params;
+import org.crontalks.constants.SchedulingProperties;
+import org.crontalks.constants.WhatsAppProperties;
+import org.crontalks.entity.EmailTemplate;
+import org.crontalks.entity.WhatsAppTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -15,8 +18,6 @@ import static org.crontalks.constants.Messages.EMAIL_TEST_SUBJECT;
 import static org.crontalks.constants.Messages.ERROR_SENDING_EMAIL;
 import static org.crontalks.constants.Messages.ERROR_SENDING_EMAIL_TO;
 import static org.crontalks.constants.Messages.ERROR_SENDING_WHATSAPP;
-import static org.crontalks.entity.EmailTemplate.emailSpeakerTemplate;
-import static org.crontalks.entity.WhatsAppTemplate.whatsAppSpeakerTemplate;
 
 @Slf4j
 @Service
@@ -25,21 +26,23 @@ public class TestService {
 
     private final GmailSmtpService emailService;
     private final SpeakerService speakerService;
+    private final EmailTemplate emailTemplate;
+    private final SchedulingProperties schedulingProperties;
     private final WhatsAppService whatsAppService;
-    private final Params.Scheduling schedulingParams;
-    private final Params.WhatsApp whatsAppParams;
+    private final WhatsAppTemplate whatsAppTemplate;
+    private final WhatsAppProperties whatsAppProperties;
 
     public String getMailTest() {
         var scheduledTalk = speakerService.getCurrentScheduledTalk();
-        return emailSpeakerTemplate(scheduledTalk);
+        return emailTemplate.emailSpeakerTemplate(scheduledTalk);
     }
 
     public String sendMailTest(String to, String subject, String[] cc) {
         var scheduledTalk = speakerService.getCurrentScheduledTalk();
-        var body = emailSpeakerTemplate(scheduledTalk);
+        var body = emailTemplate.emailSpeakerTemplate(scheduledTalk);
 
         if (StringUtils.isBlank(to))
-            to = schedulingParams.getOverseerEmail();
+            to = schedulingProperties.getOverseerEmail();
 
         if (StringUtils.isBlank(subject))
             subject = EMAIL_TEST_SUBJECT;
@@ -57,10 +60,10 @@ public class TestService {
 
         try {
             emailService.sendEmail(
-                schedulingParams.getOverseerEmail(),
+                schedulingProperties.getOverseerEmail(),
                 String.format(ERROR_SENDING_EMAIL_TO, scheduledTalk.name()),
                 null,
-                String.format(schedulingParams.getReminderSpeakerNotInformedTemplate(), scheduledTalk.name()));
+                String.format(schedulingProperties.getReminderSpeakerNotInformedTemplate(), scheduledTalk.name()));
             return String.format(EMAIL_NOT_INFORMED_SUBJECT, scheduledTalk.name());
         } catch (Exception e) {
             throw new RuntimeException(String.format(ERROR_SENDING_EMAIL, e.getMessage()), e);
@@ -69,21 +72,21 @@ public class TestService {
 
     public String getWhatsAppTest() {
         var scheduledTalk = speakerService.getCurrentScheduledTalk();
-        return whatsAppSpeakerTemplate(scheduledTalk);
+        return whatsAppTemplate.whatsAppSpeakerTemplate(scheduledTalk);
     }
 
     public String sendWhatsAppTest() {
         try {
-            var response = whatsAppService.sendWhatsAppTest(whatsAppParams.getWhatsAppTestPhoneNumber());
+            var response = whatsAppService.sendWhatsAppTest(whatsAppProperties.getWhatsAppTestPhoneNumber());
             log.info("Response: {}", response);
             return response;
         } catch (HttpClientErrorException | HttpServerErrorException e) {
-            var error = String.format(ERROR_SENDING_WHATSAPP, whatsAppParams.getWhatsAppTestPhoneNumber());
+            var error = String.format(ERROR_SENDING_WHATSAPP, whatsAppProperties.getWhatsAppTestPhoneNumber());
             log.error(error);
             log.error(e.getMessage());
             throw e;
         } catch (RestClientException e) {
-            var error = String.format(ERROR_SENDING_WHATSAPP, whatsAppParams.getWhatsAppTestPhoneNumber());
+            var error = String.format(ERROR_SENDING_WHATSAPP, whatsAppProperties.getWhatsAppTestPhoneNumber());
             log.error(error);
             throw new RuntimeException(e);
         }

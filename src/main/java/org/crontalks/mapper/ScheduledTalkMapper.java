@@ -1,6 +1,9 @@
 package org.crontalks.mapper;
 
+import lombok.RequiredArgsConstructor;
+import org.crontalks.constants.SchedulingProperties;
 import org.crontalks.entity.ScheduledTalk;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -8,15 +11,18 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static org.crontalks.constants.Params.Scheduling.getSchedulingParam;
 import static org.crontalks.mapper.OptionalMapper.mapToInt;
 import static org.crontalks.mapper.OptionalMapper.mapToString;
 
+@Component
+@RequiredArgsConstructor
 public class ScheduledTalkMapper {
 
-    public static ScheduledTalk toScheduledTalk(List<Object> row) {
+    private final SchedulingProperties schedulingProperties;
+
+    public ScheduledTalk toScheduledTalk(List<Object> row) {
         var talkDate = LocalDate.from(DateTimeFormatter.ofPattern("dd/MM/yyyy").parse(row.getFirst().toString()));
-        var talkTime = LocalTime.from(DateTimeFormatter.ofPattern("HH:mm").parse(getSchedulingParam().getMeetingTime()));
+        var talkTime = LocalTime.from(DateTimeFormatter.ofPattern("HH:mm").parse(schedulingProperties.getMeetingTime()));
 
         return ScheduledTalk.builder()
             .localDateTime(LocalDateTime.of(talkDate, talkTime))

@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import static org.crontalks.constants.Messages.EMAIL_TEST_SUBJECT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,7 +41,7 @@ public class CronExternalServiceTest {
         TestableExternalService testableService = new TestableExternalService(testService, true);
         
         when(testService.sendMailTest(isNull(), eq(EMAIL_TEST_SUBJECT), isNull()))
-            .thenReturn(ResponseEntity.ok().build());
+            .thenReturn("Success");
         
         testableService.callExternalSystem();
         
@@ -56,7 +54,7 @@ public class CronExternalServiceTest {
         TestableExternalService testableService = new TestableExternalService(testService, false);
         
         when(testService.sendWrongMailTest())
-            .thenReturn(ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build());
+            .thenReturn("Failed String");
         
         Exception exception = assertThrows(Exception.class, testableService::callExternalSystem);
         

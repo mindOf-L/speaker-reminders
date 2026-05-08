@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.crontalks.constants.SchedulingProperties;
 import org.crontalks.exception.EmailRecipientNotInformedException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -13,13 +14,13 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 import static org.crontalks.constants.Messages.ERROR_EMAIL_RECIPIENT_NOT_INFORMED;
-import static org.crontalks.constants.Params.Scheduling.getSchedulingParam;
 
 @Service
 @RequiredArgsConstructor
 public class GmailSmtpService {
 
     private final JavaMailSender mailSender;
+    private final SchedulingProperties schedulingProperties;
 
     public void sendEmail(String to, String subject, String text) throws MessagingException, UnsupportedEncodingException {
         sendEmail(to, subject, null, text);
@@ -32,10 +33,10 @@ public class GmailSmtpService {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(message, StandardCharsets.UTF_8.name());
 
-        messageHelper.setFrom(getSchedulingParam().getEmailFrom(), getSchedulingParam().getTalksOverseer());
-        messageHelper.setTo(StringUtils.isNotBlank(to) ? to : getSchedulingParam().getEmailFrom());
+        messageHelper.setFrom(schedulingProperties.getEmailFrom(), schedulingProperties.getTalksOverseer());
+        messageHelper.setTo(StringUtils.isNotBlank(to) ? to : schedulingProperties.getEmailFrom());
         messageHelper.setSubject(subject);
-        messageHelper.setCc(cc == null ? getSchedulingParam().getEmailCC() : cc);
+        messageHelper.setCc(cc == null ? schedulingProperties.getEmailCC() : cc);
         messageHelper.setText(text, true);
         mailSender.send(message);
     }

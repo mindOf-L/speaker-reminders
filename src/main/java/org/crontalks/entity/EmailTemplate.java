@@ -1,67 +1,72 @@
 package org.crontalks.entity;
 
-import org.crontalks.constants.Params;
+import lombok.RequiredArgsConstructor;
+import org.crontalks.constants.SchedulingProperties;
+import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
 
-import static org.crontalks.constants.Params.Scheduling.getSchedulingParam;
 import static org.crontalks.util.DateFormat.formatLongDateTalk;
 import static org.crontalks.util.DateFormat.formatShortDateTalk;
 import static org.crontalks.util.StringSplitter.splitName;
 
+@Component
+@RequiredArgsConstructor
 public class EmailTemplate {
 
-    public static String emailSpeakerTemplate(ScheduledTalk scheduledTalk) {
-        return processTemplate(Params.Scheduling.getReminderSpeakerTemplateEmail(), scheduledTalk);
+    private final SchedulingProperties schedulingProperties;
+
+    public String emailSpeakerTemplate(ScheduledTalk scheduledTalk) {
+        return processTemplate(schedulingProperties.getReminderSpeakerTemplateEmail(), scheduledTalk);
     }
 
-    private static String processTemplate(String template, ScheduledTalk scheduledTalk) {
+    private String processTemplate(String template, ScheduledTalk scheduledTalk) {
         return template.formatted(
             splitName(scheduledTalk.name()), // speaker
-            getSchedulingParam().getTalksOverseer(), // talk overseer
+            schedulingProperties.getTalksOverseer(), // talk overseer
             formatLongDateTalk(scheduledTalk.localDateTime()), // meeting day, format -> domingo 02/12
             scheduledTalk.outlineNumber(), // outline number
             scheduledTalk.outlineTitle(), // outline title
             scheduledTalk.congregation(), // speaker congregation
             scheduledTalk.localDateTime().format(DateTimeFormatter.ofPattern("HH:mm")), // meeting time
-            getSchedulingParam().getCongregationAddress(), // congregation address
-            getSchedulingParam().getCongregationGMaps(), // congregation google maps
+            schedulingProperties.getCongregationAddress(), // congregation address
+            schedulingProperties.getCongregationGMaps(), // congregation google maps
             processTemplateImages(scheduledTalk),
             processTemplateVideo(scheduledTalk)
         );
     }
 
-    public static String emailSpeakerNotInformedTemplate(ScheduledTalk scheduledTalk) {
-        return Params.Scheduling.getReminderSpeakerNotInformedTemplate().formatted(
+    public String emailSpeakerNotInformedTemplate(ScheduledTalk scheduledTalk) {
+        return schedulingProperties.getReminderSpeakerNotInformedTemplate().formatted(
           scheduledTalk.name()
         );
     }
 
-    private static String processTemplateImages(ScheduledTalk scheduledTalk) {
+    private String processTemplateImages(ScheduledTalk scheduledTalk) {
         return scheduledTalk.outlineHasImages()
-            ? Params.Scheduling.getReminderSpeakerTemplateOutlineImages().formatted(
-            getSchedulingParam().getVideoDeptEmail(),
+            ? schedulingProperties.getReminderSpeakerTemplateOutlineImages().formatted(
+            schedulingProperties.getVideoDeptEmail(),
                 scheduledTalk.outlineNumber(),
                 formatShortDateTalk(scheduledTalk.localDateTime()),
-                getSchedulingParam().getVideoDeptEmail())
-            : Params.Scheduling.getReminderSpeakerTemplateCustomImages().formatted(
-            getSchedulingParam().getVideoDeptEmail(),
+                schedulingProperties.getVideoDeptEmail())
+            : schedulingProperties.getReminderSpeakerTemplateCustomImages().formatted(
+            schedulingProperties.getVideoDeptEmail(),
                 scheduledTalk.outlineNumber(),
                 formatShortDateTalk(scheduledTalk.localDateTime()),
-                getSchedulingParam().getVideoDeptEmail());
+                schedulingProperties.getVideoDeptEmail());
     }
 
-    private static String processTemplateVideo(ScheduledTalk scheduledTalk) {
+    private String processTemplateVideo(ScheduledTalk scheduledTalk) {
         return scheduledTalk.outlineHasVideo()
-            ? Params.Scheduling.getReminderSpeakerTemplateOutlineVideos()
+            ? schedulingProperties.getReminderSpeakerTemplateOutlineVideos()
             : "";
     }
 
-    public static String emailEmptyData() {
-        return Params.Scheduling.getEmailEmptyData();
+    public String emailEmptyData() {
+        return schedulingProperties.getEmailEmptyData();
     }
 
-    public static String emailSomeEmptyData() {
-        return Params.Scheduling.getEmailSomeEmptyData();
+    public String emailSomeEmptyData() {
+        return schedulingProperties.getEmailSomeEmptyData();
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.scheduling.support.CronExpression;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "cron")
+@ConfigurationProperties(prefix = "schedule.cron")
 public class CronProperties {
 
     @Setter

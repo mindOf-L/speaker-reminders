@@ -4,7 +4,8 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.crontalks.constants.Messages;
-import org.crontalks.constants.Params;
+import org.crontalks.constants.SchedulingProperties;
+import org.crontalks.entity.EmailTemplate;
 import org.crontalks.exception.EmailRecipientNotInformedException;
 import org.springframework.stereotype.Service;
 
@@ -16,19 +17,16 @@ import static org.crontalks.constants.Messages.EMAIL_SENDING;
 import static org.crontalks.constants.Messages.EMAIL_SENDING_TO_CURRENT;
 import static org.crontalks.constants.Messages.WARNING_SENDING_EMAIL_EMPTY_DATA;
 import static org.crontalks.constants.Messages.WARNING_SENDING_EMAIL_SOME_EMPTY_DATA;
-import static org.crontalks.entity.EmailTemplate.emailEmptyData;
-import static org.crontalks.entity.EmailTemplate.emailSomeEmptyData;
-import static org.crontalks.entity.EmailTemplate.emailSpeakerNotInformedTemplate;
-import static org.crontalks.entity.EmailTemplate.emailSpeakerTemplate;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class GmailService {
 
+    private final EmailTemplate emailTemplate;
+    private final SchedulingProperties schedulingProperties;
     private final GmailSmtpService emailService;
     private final SpeakerService speakerService;
-    private final Params.Scheduling schedulingParams;
 
     public String sendMail(String to, String subject, String body) {
         try {
@@ -48,7 +46,7 @@ public class GmailService {
             throw new RuntimeException(Messages.ERROR_GETTING_DATA_FROM_GSHEET);
         }
 
-        var body = emailSpeakerTemplate(scheduledTalk);
+        var body = emailTemplate.emailSpeakerTemplate(scheduledTalk);
 
         try {
             log.info(EMAIL_SENDING_TO_CURRENT);
@@ -57,8 +55,8 @@ public class GmailService {
             return String.format(Messages.EMAIL_SENT_CORRECTLY, scheduledTalk.email(), body);
 
         } catch (EmailRecipientNotInformedException e) {
-            body = emailSpeakerNotInformedTemplate(scheduledTalk);
-            emailService.sendEmail(schedulingParams.getOverseerEmail(), EMAIL_NOT_INFORMED_SUBJECT, body);
+            body = emailTemplate.emailSpeakerNotInformedTemplate(scheduledTalk);
+            emailService.sendEmail(schedulingProperties.getOverseerEmail(), EMAIL_NOT_INFORMED_SUBJECT, body);
             throw new RuntimeException(String.format(Messages.ERROR_SENDING_EMAIL, e.getMessage()), e);
 
         } catch (Exception e) {
@@ -69,9 +67,9 @@ public class GmailService {
     public void sendMailCurrentFails() {
         try {
             if (speakerService.getCurrentScheduledTalk() == null) {
-                emailService.sendEmail(schedulingParams.getOverseerEmail(), WARNING_SENDING_EMAIL_EMPTY_DATA, emailEmptyData());
+                emailService.sendEmail(schedulingProperties.getOverseerEmail(), WARNING_SENDING_EMAIL_EMPTY_DATA, emailTemplate.emailEmptyData());
             } else {
-                emailService.sendEmail(schedulingParams.getOverseerEmail(), WARNING_SENDING_EMAIL_SOME_EMPTY_DATA, emailSomeEmptyData());
+                emailService.sendEmail(schedulingProperties.getOverseerEmail(), WARNING_SENDING_EMAIL_SOME_EMPTY_DATA, emailTemplate.emailSomeEmptyData());
             }
         } catch (MessagingException | UnsupportedEncodingException e) {
             log.error("Failed to send warning email about failures: {}", e.getMessage(), e);

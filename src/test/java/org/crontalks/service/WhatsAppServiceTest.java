@@ -1,14 +1,13 @@
 package org.crontalks.service;
 
-import com.google.common.collect.ImmutableMap;
-import org.crontalks.constants.Params;
+import org.crontalks.constants.SchedulingProperties;
+import org.crontalks.constants.WhatsAppProperties;
 import org.crontalks.entity.ScheduledTalk;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -18,15 +17,13 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
-import static org.crontalks.constants.Params.WhatsApp.createImmutableMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,6 +35,12 @@ public class WhatsAppServiceTest {
 
     @Mock
     private RestTemplate restTemplate;
+
+    @Mock
+    private WhatsAppProperties whatsAppProperties;
+
+    @Mock
+    private SchedulingProperties schedulingProperties;
 
     @InjectMocks
     private WhatsAppService whatsAppService;
@@ -64,90 +67,64 @@ public class WhatsAppServiceTest {
 
     @Test
     void sendWhatsAppTest_ShouldThrowUnauthorizedException_WhenCallingWhatsAppAPI() {
-        try (MockedStatic<Params.WhatsApp> mockedWhatsApp = mockStatic(Params.WhatsApp.class);
-             MockedStatic<Params.Scheduling> mockedScheduling = mockStatic(Params.Scheduling.class)) {
-            
-            // Mock WhatsApp parameters
-            Params.WhatsApp whatsAppParam = mock(Params.WhatsApp.class);
-            when(whatsAppParam.getWhatsAppUrl()).thenReturn(TEST_WHATSAPP_URL);
-            when(whatsAppParam.getWhatsAppPhoneNumberId()).thenReturn(TEST_WHATSAPP_PHONE_ID);
-            when(whatsAppParam.getWhatsAppTemplateNameFirst()).thenReturn(TEST_TEMPLATE_NAME_FIRST);
-            when(whatsAppParam.getWhatsAppTemplateNameSecond()).thenReturn(TEST_TEMPLATE_NAME_SECOND);
-            when(whatsAppParam.getOutlineImagesTemplateWhatsApp()).thenReturn("Outline images template %s %s %s");
-            when(whatsAppParam.getSpeakerCustomImagesTemplateWhatsApp()).thenReturn("Custom images template %s %s %s");
-            mockedWhatsApp.when(Params.WhatsApp::getWhatsAppParam).thenReturn(whatsAppParam);
+        when(whatsAppProperties.getWhatsAppUrl()).thenReturn(TEST_WHATSAPP_URL);
+        when(whatsAppProperties.getWhatsAppPhoneNumberId()).thenReturn(TEST_WHATSAPP_PHONE_ID);
+        when(whatsAppProperties.getWhatsAppTemplateNameFirst()).thenReturn(TEST_TEMPLATE_NAME_FIRST);
+        when(whatsAppProperties.getWhatsAppTemplateNameSecond()).thenReturn(TEST_TEMPLATE_NAME_SECOND);
+        when(whatsAppProperties.getOutlineImagesTemplateWhatsApp()).thenReturn("Outline images template %s %s %s");
+        when(whatsAppProperties.getSpeakerCustomImagesTemplateWhatsApp()).thenReturn("Custom images template %s %s %s");
+        
+        when(whatsAppProperties.createMap(anyString(), anyString())).thenAnswer(invocation -> {
+            return Map.of(invocation.getArgument(0).toString(), invocation.getArgument(1).toString());
+        });
 
-            // Mock Scheduling parameters
-            Params.Scheduling schedulingParam = mock(Params.Scheduling.class);
-            when(schedulingParam.getTalksOverseer()).thenReturn("Test Overseer");
-            when(schedulingParam.getMeetingTime()).thenReturn("19:00");
-            when(schedulingParam.getCongregationAddress()).thenReturn("123 Test Street");
-            when(schedulingParam.getCongregationGMaps()).thenReturn("https://maps.google.com/test");
-            when(schedulingParam.getVideoDeptEmail()).thenReturn("video@example.com");
-            when(schedulingParam.getVideoDeptOverseerName()).thenReturn("Video Overseer");
-            when(schedulingParam.getVideoDeptOverseerPhone()).thenReturn("+1234567890");
-            mockedScheduling.when(Params.Scheduling::getSchedulingParam).thenReturn(schedulingParam);
+        when(schedulingProperties.getTalksOverseer()).thenReturn("Test Overseer");
+        when(schedulingProperties.getMeetingTime()).thenReturn("19:00");
+        when(schedulingProperties.getCongregationAddress()).thenReturn("123 Test Street");
+        when(schedulingProperties.getCongregationGMaps()).thenReturn("https://maps.google.com/test");
+        when(schedulingProperties.getVideoDeptEmail()).thenReturn("video@example.com");
+        when(schedulingProperties.getVideoDeptOverseerName()).thenReturn("Video Overseer");
+        when(schedulingProperties.getVideoDeptOverseerPhone()).thenReturn("+1234567890");
 
-            // Mock createImmutableMap
-            mockedWhatsApp.when(() -> createImmutableMap(anyString(), anyString())).thenAnswer(invocation -> {
-                String key = invocation.getArgument(0);
-                String value = invocation.getArgument(1);
-                return ImmutableMap.of(key, value);
-            });
-            
-            // Mock SpeakerService
-            when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
+        when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
 
-            // Expect HttpClientErrorException.Unauthorized to be thrown
-            HttpClientErrorException.Unauthorized exception = assertThrows(
-                HttpClientErrorException.Unauthorized.class, 
-                () -> whatsAppService.sendWhatsAppTest(TEST_PHONE)
-            );
-            
-            // Verify the exception details if needed
-            assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatusCode());
-        }
+        when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(String.class)))
+                .thenThrow(new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "Unauthorized"));
+
+        HttpClientErrorException exception = assertThrows(
+            HttpClientErrorException.class, 
+            () -> whatsAppService.sendWhatsAppTest(TEST_PHONE)
+        );
+        
+        assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatusCode());
     }
 
     @Test
     void sendWhatsAppTest_ShouldThrowException_WhenRestTemplateThrowsException() {
-        try (MockedStatic<Params.WhatsApp> mockedWhatsApp = mockStatic(Params.WhatsApp.class);
-             MockedStatic<Params.Scheduling> mockedScheduling = mockStatic(Params.Scheduling.class)) {
-            
-            // Mock WhatsApp parameters
-            Params.WhatsApp whatsAppParam = mock(Params.WhatsApp.class);
-            when(whatsAppParam.getWhatsAppUrl()).thenReturn(TEST_WHATSAPP_URL);
-            when(whatsAppParam.getWhatsAppPhoneNumberId()).thenReturn(TEST_WHATSAPP_PHONE_ID);
-            when(whatsAppParam.getWhatsAppTemplateNameFirst()).thenReturn(TEST_TEMPLATE_NAME_FIRST);
-            when(whatsAppParam.getWhatsAppTemplateNameSecond()).thenReturn(TEST_TEMPLATE_NAME_SECOND);
-            when(whatsAppParam.getOutlineImagesTemplateWhatsApp()).thenReturn("Outline images template %s %s %s");
-            when(whatsAppParam.getSpeakerCustomImagesTemplateWhatsApp()).thenReturn("Custom images template %s %s %s");
-            mockedWhatsApp.when(Params.WhatsApp::getWhatsAppParam).thenReturn(whatsAppParam);
-            
-            // Mock Scheduling parameters
-            Params.Scheduling schedulingParam = mock(Params.Scheduling.class);
-            when(schedulingParam.getTalksOverseer()).thenReturn("Test Overseer");
-            when(schedulingParam.getMeetingTime()).thenReturn("19:00");
-            when(schedulingParam.getCongregationAddress()).thenReturn("123 Test Street");
-            when(schedulingParam.getCongregationGMaps()).thenReturn("https://maps.google.com/test");
-            when(schedulingParam.getVideoDeptEmail()).thenReturn("video@example.com");
-            when(schedulingParam.getVideoDeptOverseerName()).thenReturn("Video Overseer");
-            when(schedulingParam.getVideoDeptOverseerPhone()).thenReturn("+1234567890");
-            mockedScheduling.when(Params.Scheduling::getSchedulingParam).thenReturn(schedulingParam);
-            
-            // Mock createImmutableMap
-            mockedWhatsApp.when(() -> createImmutableMap(anyString(), anyString())).thenAnswer(invocation -> {
-                String key = invocation.getArgument(0);
-                String value = invocation.getArgument(1);
-                return ImmutableMap.of(key, value);
-            });
-            
-            // Mock RestTemplate to throw exception
-            when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(String.class)))
-                    .thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Bad Request"));
-            when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
+        when(whatsAppProperties.getWhatsAppUrl()).thenReturn(TEST_WHATSAPP_URL);
+        when(whatsAppProperties.getWhatsAppPhoneNumberId()).thenReturn(TEST_WHATSAPP_PHONE_ID);
+        when(whatsAppProperties.getWhatsAppTemplateNameFirst()).thenReturn(TEST_TEMPLATE_NAME_FIRST);
+        when(whatsAppProperties.getWhatsAppTemplateNameSecond()).thenReturn(TEST_TEMPLATE_NAME_SECOND);
+        when(whatsAppProperties.getOutlineImagesTemplateWhatsApp()).thenReturn("Outline images template %s %s %s");
+        when(whatsAppProperties.getSpeakerCustomImagesTemplateWhatsApp()).thenReturn("Custom images template %s %s %s");
+        
+        when(whatsAppProperties.createMap(anyString(), anyString())).thenAnswer(invocation -> {
+            return Map.of(invocation.getArgument(0).toString(), invocation.getArgument(1).toString());
+        });
+        
+        when(schedulingProperties.getTalksOverseer()).thenReturn("Test Overseer");
+        when(schedulingProperties.getMeetingTime()).thenReturn("19:00");
+        when(schedulingProperties.getCongregationAddress()).thenReturn("123 Test Street");
+        when(schedulingProperties.getCongregationGMaps()).thenReturn("https://maps.google.com/test");
+        when(schedulingProperties.getVideoDeptEmail()).thenReturn("video@example.com");
+        when(schedulingProperties.getVideoDeptOverseerName()).thenReturn("Video Overseer");
+        when(schedulingProperties.getVideoDeptOverseerPhone()).thenReturn("+1234567890");
 
-            assertThrows(HttpClientErrorException.class, () -> whatsAppService.sendWhatsAppTest(TEST_PHONE));
-        }
+        when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
+
+        when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(String.class)))
+                .thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Bad Request"));
+
+        assertThrows(HttpClientErrorException.class, () -> whatsAppService.sendWhatsAppTest(TEST_PHONE));
     }
 }
