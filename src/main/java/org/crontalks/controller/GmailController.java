@@ -3,6 +3,7 @@ package org.crontalks.controller;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.crontalks.service.GmailService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,12 +21,20 @@ public class GmailController {
 
     @PostMapping
     public ResponseEntity<?> sendMail(@RequestParam String to, @RequestParam String subject, @RequestParam String body) {
-        return gmailService.sendMail(to, subject, body);
+        try {
+            return new ResponseEntity<>(gmailService.sendMail(to, subject, body), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/speaker/current")
     public ResponseEntity<?> sendMailCurrent() throws MessagingException, UnsupportedEncodingException {
-        return gmailService.sendMailCurrent();
+        try {
+            return new ResponseEntity<>(gmailService.sendMailCurrent(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

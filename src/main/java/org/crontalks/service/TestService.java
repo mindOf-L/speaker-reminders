@@ -5,18 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.crontalks.constants.Messages;
 import org.crontalks.constants.Params;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
 
 import static org.crontalks.constants.Messages.EMAIL_NOT_INFORMED_SUBJECT;
 import static org.crontalks.constants.Messages.EMAIL_TEST_SUBJECT;
 import static org.crontalks.constants.Messages.ERROR_SENDING_EMAIL;
 import static org.crontalks.constants.Messages.ERROR_SENDING_EMAIL_TO;
 import static org.crontalks.constants.Messages.ERROR_SENDING_WHATSAPP;
-import static org.crontalks.constants.Params.Scheduling.getSchedulingParam;
-import static org.crontalks.constants.Params.WhatsApp.getWhatsAppParam;
 import static org.crontalks.entity.EmailTemplate.emailSpeakerTemplate;
 import static org.crontalks.entity.WhatsAppTemplate.whatsAppSpeakerTemplate;
 
@@ -28,63 +26,66 @@ public class TestService {
     private final GmailSmtpService emailService;
     private final SpeakerService speakerService;
     private final WhatsAppService whatsAppService;
+    private final Params.Scheduling schedulingParams;
+    private final Params.WhatsApp whatsAppParams;
 
-    public ResponseEntity<?> getMailTest() {
+    public String getMailTest() {
         var scheduledTalk = speakerService.getCurrentScheduledTalk();
-        var body = emailSpeakerTemplate(scheduledTalk);
-        return new ResponseEntity<>(body, HttpStatus.OK);
+        return emailSpeakerTemplate(scheduledTalk);
     }
 
-    public ResponseEntity<?> sendMailTest(String to, String subject, String[] cc) {
+    public String sendMailTest(String to, String subject, String[] cc) {
         var scheduledTalk = speakerService.getCurrentScheduledTalk();
         var body = emailSpeakerTemplate(scheduledTalk);
 
         if (StringUtils.isBlank(to))
-            to = getSchedulingParam().getOverseerEmail();
+            to = schedulingParams.getOverseerEmail();
 
-        if(StringUtils.isBlank(subject))
+        if (StringUtils.isBlank(subject))
             subject = EMAIL_TEST_SUBJECT;
 
         try {
             emailService.sendEmail(to, subject, cc, body);
-            return new ResponseEntity<>(String.format(Messages.EMAIL_SENT_CORRECTLY, to, body), HttpStatus.OK);
+            return String.format(Messages.EMAIL_SENT_CORRECTLY, to, body);
         } catch (Exception e) {
-            return new ResponseEntity<>(String.format(ERROR_SENDING_EMAIL, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new RuntimeException(String.format(ERROR_SENDING_EMAIL, e.getMessage()), e);
         }
     }
 
-    public ResponseEntity<?> sendWrongMailTest() {
+    public String sendWrongMailTest() {
         var scheduledTalk = speakerService.getCurrentScheduledTalk();
 
         try {
             emailService.sendEmail(
-                getSchedulingParam().getOverseerEmail(),
+                schedulingParams.getOverseerEmail(),
                 String.format(ERROR_SENDING_EMAIL_TO, scheduledTalk.name()),
                 null,
-                String.format(Params.Scheduling.getReminderSpeakerNotInformedTemplate(), scheduledTalk.name()));
-            return new ResponseEntity<>(String.format(EMAIL_NOT_INFORMED_SUBJECT, scheduledTalk.name()), HttpStatus.NOT_ACCEPTABLE);
+                String.format(schedulingParams.getReminderSpeakerNotInformedTemplate(), scheduledTalk.name()));
+            return String.format(EMAIL_NOT_INFORMED_SUBJECT, scheduledTalk.name());
         } catch (Exception e) {
-            return new ResponseEntity<>(String.format(ERROR_SENDING_EMAIL, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new RuntimeException(String.format(ERROR_SENDING_EMAIL, e.getMessage()), e);
         }
     }
 
-    public ResponseEntity<?> getWhatsAppTest() {
+    public String getWhatsAppTest() {
         var scheduledTalk = speakerService.getCurrentScheduledTalk();
-        var body = whatsAppSpeakerTemplate(scheduledTalk);
-        return new ResponseEntity<>(body, HttpStatus.OK);
+        return whatsAppSpeakerTemplate(scheduledTalk);
     }
 
-    public ResponseEntity<?> sendWhatsAppTest() {
+    public String sendWhatsAppTest() {
         try {
-            var response = whatsAppService.sendWhatsAppTest(getWhatsAppParam().getWhatsAppTestPhoneNumber());
+            var response = whatsAppService.sendWhatsAppTest(whatsAppParams.getWhatsAppTestPhoneNumber());
             log.info("Response: {}", response);
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
-        } catch (HttpClientErrorException e) {
-            var error = String.format(ERROR_SENDING_WHATSAPP, getWhatsAppParam().getWhatsAppTestPhoneNumber());
+            return response;
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            var error = String.format(ERROR_SENDING_WHATSAPP, whatsAppParams.getWhatsAppTestPhoneNumber());
             log.error(error);
             log.error(e.getMessage());
+            throw e;
+        } catch (RestClientException e) {
+            var error = String.format(ERROR_SENDING_WHATSAPP, whatsAppParams.getWhatsAppTestPhoneNumber());
+            log.error(error);
+            throw new RuntimeException(e);
         }
-
-        return new ResponseEntity<>(ERROR_SENDING_WHATSAPP.formatted(getWhatsAppParam().getWhatsAppTestPhoneNumber()), HttpStatus.BAD_REQUEST);
     }
 }
