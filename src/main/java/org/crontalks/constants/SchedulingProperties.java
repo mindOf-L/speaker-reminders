@@ -10,34 +10,34 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "schedule")
 public class SchedulingProperties {
 
-    @Value("${schedule.email.from}")
+    @Value("${email.from}")
     private String emailFrom;
 
-    @Value("${schedule.email.from}")
+    @Value("${email.from}")
     private String overseerEmail;
 
-    @Value("${schedule.email.cc}")
+    @Value("${email.cc}")
     private String[] emailCC;
 
-    @Value("${schedule.video-dept.email}")
+    @Value("${video-dept.email}")
     private String videoDeptEmail;
 
-    @Value("${schedule.video-dept.overseer-name}")
+    @Value("${video-dept.overseer-name}")
     private String videoDeptOverseerName;
 
-    @Value("${schedule.video-dept.overseer-phone}")
+    @Value("${video-dept.overseer-phone}")
     private String videoDeptOverseerPhone;
 
-    @Value("${schedule.MEETING-TIME:12:30}")
+    @Value("${MEETING-TIME:12:30}")
     private String meetingTime;
 
-    @Value("${schedule.TALK-OVERSEER}")
+    @Value("${TALK-OVERSEER}")
     private String talksOverseer;
 
-    @Value("${schedule.CONGREGATION-ADDRESS}")
+    @Value("${CONGREGATION-ADDRESS}")
     private String congregationAddress;
 
-    @Value("${schedule.CONGREGATION-GMAPS}")
+    @Value("${CONGREGATION-GMAPS}")
     private String congregationGMaps;
 
     @Getter
