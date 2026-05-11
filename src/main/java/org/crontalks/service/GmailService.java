@@ -53,9 +53,9 @@ public class GmailService {
         try {
             log.info(EMAIL_SENDING_TO_CURRENT);
             emailService.sendEmail(scheduledTalk.email(), EMAIL_DEFAULT_SUBJECT, body);
-            emailService.sendEmail(scheduledTalk.email(), EMAIL_WHATSAPP_REMINDER_SUBJECT, bodyEmailWhatsApp);
+            emailService.sendEmail(scheduledTalk.email(), EMAIL_WHATSAPP_REMINDER_SUBJECT, new String[]{schedulingProperties.getOverseerEmail()}, bodyEmailWhatsApp);
             log.info(Messages.EMAIL_SENT);
-            return String.format(Messages.EMAIL_SENT_CORRECTLY, scheduledTalk.email(), body);
+            return String.format(Messages.EMAIL_SENT_CORRECTLY_NO_CONTENT, scheduledTalk.email());
 
         } catch (EmailRecipientNotInformedException e) {
             body = emailTemplate.emailSpeakerNotInformedTemplate(scheduledTalk);

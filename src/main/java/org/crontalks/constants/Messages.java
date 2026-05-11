@@ -9,6 +9,7 @@ public class Messages {
         EMAIL_WHATSAPP_REMINDER_SUBJECT = "⏰ WhatsApp: Recordatorio de discurso público para esta semana",
         EMAIL_NOT_INFORMED_SUBJECT = "Email de discursante no informado o no válido: %s",
         EMAIL_SENT_CORRECTLY = "Email sent correctly to %s with this content: %s",
+        EMAIL_SENT_CORRECTLY_NO_CONTENT = "Email sent correctly to %s",
         EMAIL_SENT = "Email sent",
         EMAIL_TEST_SUBJECT = "Test email",
 
