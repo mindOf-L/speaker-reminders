@@ -1,6 +1,7 @@
 package org.crontalks.service;
 
 import jakarta.mail.MessagingException;
+import org.crontalks.constants.EmailTemplates;
 import org.crontalks.constants.Messages;
 import org.crontalks.constants.SchedulingProperties;
 import org.crontalks.constants.WhatsAppProperties;
@@ -15,8 +16,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 
@@ -41,6 +42,8 @@ public class TestServiceTest {
     @Mock private SpeakerService speakerService;
 
     @Mock private EmailTemplate emailTemplate;
+
+    @Mock private EmailTemplates emailTemplates;
 
     @Mock private SchedulingProperties schedulingProperties;
 
@@ -77,7 +80,7 @@ public class TestServiceTest {
     @Test
     void getMailTest_ShouldReturnEmailBody() {
         when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
-        when(emailTemplate.emailSpeakerTemplate(mockScheduledTalk)).thenReturn(MOCKED_EMAIL_BODY);
+        when(emailTemplate.processEmailSpeakerTemplate(mockScheduledTalk)).thenReturn(MOCKED_EMAIL_BODY);
 
         String response = testService.getMailTest();
         assertEquals(MOCKED_EMAIL_BODY, response);
@@ -86,7 +89,7 @@ public class TestServiceTest {
     @Test
     void sendMailTest_ShouldUseDefaultValues_WhenParametersAreNull() throws Exception {
         when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
-        when(emailTemplate.emailSpeakerTemplate(mockScheduledTalk)).thenReturn(MOCKED_EMAIL_BODY);
+        when(emailTemplate.processEmailSpeakerTemplate(mockScheduledTalk)).thenReturn(MOCKED_EMAIL_BODY);
         when(schedulingProperties.getOverseerEmail()).thenReturn(OVERSEER_EMAIL);
 
         doNothing().when(emailService).sendEmail(eq(OVERSEER_EMAIL), eq(EMAIL_TEST_SUBJECT), isNull(), eq(MOCKED_EMAIL_BODY));
@@ -98,7 +101,7 @@ public class TestServiceTest {
     @Test
     void sendMailTest_ShouldUseProvidedValues_WhenParametersAreProvided() throws Exception {
         when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
-        when(emailTemplate.emailSpeakerTemplate(mockScheduledTalk)).thenReturn(MOCKED_EMAIL_BODY);
+        when(emailTemplate.processEmailSpeakerTemplate(mockScheduledTalk)).thenReturn(MOCKED_EMAIL_BODY);
         String customSubject = "Custom Subject";
         String[] customCC = new String[]{"cc@example.com"};
 
@@ -111,7 +114,7 @@ public class TestServiceTest {
     @Test
     void sendMailTest_ShouldThrowException_WhenExceptionOccurs() throws Exception {
         when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
-        when(emailTemplate.emailSpeakerTemplate(mockScheduledTalk)).thenReturn(MOCKED_EMAIL_BODY);
+        when(emailTemplate.processEmailSpeakerTemplate(mockScheduledTalk)).thenReturn(MOCKED_EMAIL_BODY);
         when(schedulingProperties.getOverseerEmail()).thenReturn(OVERSEER_EMAIL);
 
         doThrow(new MessagingException("Test exception")).when(emailService)
@@ -125,7 +128,7 @@ public class TestServiceTest {
     void sendWrongMailTest_ShouldSendEmailToOverseer() throws Exception {
         when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
         when(schedulingProperties.getOverseerEmail()).thenReturn(OVERSEER_EMAIL);
-        when(schedulingProperties.getReminderSpeakerNotInformedTemplate()).thenReturn("Template %s");
+        when(emailTemplates.getReminderSpeakerNotInformedTemplate()).thenReturn("Template %s");
 
         doNothing().when(emailService).sendEmail(
             eq(OVERSEER_EMAIL),
@@ -142,7 +145,7 @@ public class TestServiceTest {
     void sendWrongMailTest_ShouldThrowException_WhenExceptionOccurs() throws Exception {
         when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
         when(schedulingProperties.getOverseerEmail()).thenReturn(OVERSEER_EMAIL);
-        when(schedulingProperties.getReminderSpeakerNotInformedTemplate()).thenReturn("Template %s");
+        when(emailTemplates.getReminderSpeakerNotInformedTemplate()).thenReturn("Template %s");
 
         doThrow(new MessagingException("Test exception")).when(emailService).sendEmail(
             anyString(), anyString(), isNull(), anyString()

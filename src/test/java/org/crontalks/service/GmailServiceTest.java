@@ -90,7 +90,7 @@ public class GmailServiceTest {
     }
 
     @Test
-    void sendMailCurrent_ShouldThrowException_WhenScheduledTalkIsNull() throws Exception {
+    void sendMailCurrent_ShouldThrowException_WhenScheduledTalkIsNull() {
         when(speakerService.getCurrentScheduledTalk()).thenReturn(null);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> gmailService.sendMailCurrent());
@@ -103,7 +103,7 @@ public class GmailServiceTest {
         when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
         
         String expectedBody = "Mocked email body";
-        when(emailTemplate.emailSpeakerTemplate(mockScheduledTalk)).thenReturn(expectedBody);
+        when(emailTemplate.processEmailSpeakerTemplate(mockScheduledTalk)).thenReturn(expectedBody);
         
         doNothing().when(emailService).sendEmail(eq(mockScheduledTalk.email()), eq(EMAIL_DEFAULT_SUBJECT), eq(expectedBody));
 
@@ -121,7 +121,7 @@ public class GmailServiceTest {
 
         String expectedBody = "Mocked email body";
         String expectedOverseerBody = "Mocked overseer email body";
-        when(emailTemplate.emailSpeakerTemplate(mockScheduledTalk)).thenReturn(expectedBody);
+        when(emailTemplate.processEmailSpeakerTemplate(mockScheduledTalk)).thenReturn(expectedBody);
         when(emailTemplate.emailSpeakerNotInformedTemplate(mockScheduledTalk)).thenReturn(expectedOverseerBody);
         
         doThrow(new EmailRecipientNotInformedException("Email not informed"))
@@ -142,7 +142,7 @@ public class GmailServiceTest {
         when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
 
         String expectedBody = "Mocked email body";
-        when(emailTemplate.emailSpeakerTemplate(mockScheduledTalk)).thenReturn(expectedBody);
+        when(emailTemplate.processEmailSpeakerTemplate(mockScheduledTalk)).thenReturn(expectedBody);
         
         doThrow(new RuntimeException("Test exception"))
             .when(emailService).sendEmail(eq(mockScheduledTalk.email()), eq(EMAIL_DEFAULT_SUBJECT), eq(expectedBody));

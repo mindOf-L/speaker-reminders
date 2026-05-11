@@ -15,6 +15,7 @@ import static org.crontalks.constants.Messages.EMAIL_DEFAULT_SUBJECT;
 import static org.crontalks.constants.Messages.EMAIL_NOT_INFORMED_SUBJECT;
 import static org.crontalks.constants.Messages.EMAIL_SENDING;
 import static org.crontalks.constants.Messages.EMAIL_SENDING_TO_CURRENT;
+import static org.crontalks.constants.Messages.EMAIL_WHATSAPP_REMINDER_SUBJECT;
 import static org.crontalks.constants.Messages.WARNING_SENDING_EMAIL_EMPTY_DATA;
 import static org.crontalks.constants.Messages.WARNING_SENDING_EMAIL_SOME_EMPTY_DATA;
 
@@ -46,11 +47,13 @@ public class GmailService {
             throw new RuntimeException(Messages.ERROR_GETTING_DATA_FROM_GSHEET);
         }
 
-        var body = emailTemplate.emailSpeakerTemplate(scheduledTalk);
+        var body = emailTemplate.processEmailSpeakerTemplate(scheduledTalk);
+        var bodyEmailWhatsApp = emailTemplate.processEmailSpeakerWhatsAppTemplate(scheduledTalk);
 
         try {
             log.info(EMAIL_SENDING_TO_CURRENT);
             emailService.sendEmail(scheduledTalk.email(), EMAIL_DEFAULT_SUBJECT, body);
+            emailService.sendEmail(scheduledTalk.email(), EMAIL_WHATSAPP_REMINDER_SUBJECT, bodyEmailWhatsApp);
             log.info(Messages.EMAIL_SENT);
             return String.format(Messages.EMAIL_SENT_CORRECTLY, scheduledTalk.email(), body);
 
