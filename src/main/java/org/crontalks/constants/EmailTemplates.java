@@ -70,37 +70,52 @@ public class EmailTemplates {
         """;
 
     private final String remiderSpeakerTemplateWhatsApp = """
-        <div>
-            <style>
-                .button-primary {
-                     font-size: 1.25em;
-                     color: white;
-                     background: rgb(28, 184, 65);
-                     border: 1px solid transparent;
-                     border-color: #ccc;
-                     border-radius: 4px;
-                     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-                     padding: 6px 12px;
-                     margin-bottom: 0;
-                     display: inline-block;
-                     text-decoration: none;
-                     text-align: center;
-                     white-space: nowrap;
-                     vertical-align: middle;
-                     -ms-touch-action: manipulation;
-                     touch-action: manipulation;
-                     -webkit-user-select: none;
-                     -moz-user-select: none;
-                     -ms-user-select: none;
-                     user-select: none;
-                 }
-            </style>
-
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        <html style="border:none;" xmlns="https://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+            <head>
+                <base target=_blank href="https://">
+                <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <meta name="x-apple-disable-message-reformatting"/>
+                <meta name="apple-mobile-web-app-capable" content="yes"/>
+                <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+                <meta name="format-detection" content="telephone=no"/>
+                <title></title>
+                <style>
+                    .button-primary {
+                         font-size: 1.25em;
+                         color: white !important;
+                         background: rgb(28, 184, 65);
+                         border: 1px solid transparent;
+                         border-color: #ccc;
+                         border-radius: 4px;
+                         text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+                         padding: 6px 12px;
+                         margin-bottom: 0;
+                         display: inline-block;
+                         text-decoration: none;
+                         text-align: center;
+                         white-space: nowrap;
+                         vertical-align: middle;
+                         -ms-touch-action: manipulation;
+                         touch-action: manipulation;
+                         -webkit-user-select: none;
+                         -moz-user-select: none;
+                         -ms-user-select: none;
+                         user-select: none;
+                     }
+                </style>
+            </head>
+            <body>
+    
             <p style="font-size:1.25em">Hola %s 👋</p>
-
+    
             <p style="font-size:1.25em">Te mando este correo automatizado para que informes al discursante de esta semana por WhatsApp. Solo presiona el botón de abajo y se abrirá WhatsApp automáticamente con los detalles del recordatorio. Recuerda que una vez se abra WhatsApp <strong>TIENES QUE DARLE A ENVIAR!!!</strong></p>
-
+    
             <p><a class="button-primary" href="https://api.whatsapp.com/send?phone=%s&text=%s">Enviar Mensaje a %s</a></p>
-        </div>
+            </body>
+        </html>
         """;
 }
