@@ -34,7 +34,7 @@
 
 	<properties>
 		<!-- build -->
-		<java.version>25</java.version>
+		<java.version>26</java.version>
 		<maven-compiler.version>3.15.0</maven-compiler.version>
 		<!-- map -->
 		<lombok.version>1.18.44</lombok.version>
@@ -71,12 +71,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
-		</dependency>
-
-		<!-- DB -->
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
 		</dependency>
 
 		<!-- lombok -->
