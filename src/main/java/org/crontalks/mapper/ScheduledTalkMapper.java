@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static org.crontalks.mapper.OptionalMapper.mapToBoolean;
 import static org.crontalks.mapper.OptionalMapper.mapToInt;
 import static org.crontalks.mapper.OptionalMapper.mapToString;
 
@@ -32,8 +33,9 @@ public class ScheduledTalkMapper {
             .outlineTitle(mapToString(row.get(4)))
             .phoneNumber(mapToString(row.get(5)))
             .email(mapToString(row.get(6)))
-            .outlineHasImages(Boolean.parseBoolean(mapToString(row.get(7))))
-            .outlineHasVideo(Boolean.parseBoolean(mapToString(row.get(8))))
+            .outlineHasImages(mapToBoolean(row.get(7)))
+            .outlineHasVideo(mapToBoolean(row.get(8)))
+            .hasWhatsApp(mapToBoolean(row.get(9)))
             .build();
     }
 }

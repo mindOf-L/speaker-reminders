@@ -13,4 +13,8 @@ public class OptionalMapper {
     public static int mapToInt(Object value) {
         return Optional.ofNullable(value).map(Object::toString).map(Integer::parseInt).orElse(0);
     }
+
+    public static boolean mapToBoolean(Object value) {
+        return Optional.ofNullable(value).map(Object::toString).map(Boolean::parseBoolean).orElse(false);
+    }
 }

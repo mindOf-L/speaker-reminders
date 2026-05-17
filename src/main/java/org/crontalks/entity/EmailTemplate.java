@@ -43,6 +43,24 @@ public class EmailTemplate {
         );
     }
 
+    public String processEmailSpeakerNext4WeekTemplate(ScheduledTalk scheduledTalk) {
+        return emailTemplates.getReminderSpeakerNext4WeekTemplateEmail().formatted(
+            splitName(scheduledTalk.name()), // speaker
+            schedulingProperties.getTalksOverseer(), // talk overseer
+            formatLongDateTalk(scheduledTalk.localDateTime()), // meeting day, format -> domingo 02/12
+            scheduledTalk.outlineNumber(), // outline number
+            scheduledTalk.outlineTitle() // outline title
+        );
+    }
+
+    public String processEmailSpecialOutlineScheduledTemplate(ScheduledTalk scheduledTalk) {
+        return emailTemplates.getSpecialOutLineScheduledTemplateEmail().formatted(
+            splitName(schedulingProperties.getTalksOverseer()), // talk overseer first name
+            formatLongDateTalk(scheduledTalk.localDateTime()), // meeting day, format -> domingo 02/12
+            scheduledTalk.outlineTitle() // outline title
+        );
+    }
+
     public String emailSpeakerNotInformedTemplate(ScheduledTalk scheduledTalk) {
         return emailTemplates.getReminderSpeakerNotInformedTemplate().formatted(
           scheduledTalk.name()
@@ -78,10 +96,19 @@ public class EmailTemplate {
     }
 
     public String processEmailSpeakerWhatsAppTemplate(ScheduledTalk scheduledTalk) {
-        return emailTemplates.getRemiderSpeakerTemplateWhatsApp().formatted(
+        return emailTemplates.getRemiderCurrentSpeakerTemplateWhatsApp().formatted(
             schedulingProperties.getTalksOverseer(),
             String.format("34%s", scheduledTalk.phoneNumber()).replace(" ", ""),
             encodeSkippingEmojis(processWhatsAppMessageTemplate(scheduledTalk)),
+            splitName(scheduledTalk.name())
+        );
+    }
+
+    public String processEmailSpeakerNext4WeekWhatsAppTemplate(ScheduledTalk scheduledTalk) {
+        return emailTemplates.getRemiderSpeakerNext4WeekTemplateWhatsApp().formatted(
+            schedulingProperties.getTalksOverseer(),
+            String.format("34%s", scheduledTalk.phoneNumber()).replace(" ", ""),
+            encodeSkippingEmojis(processWhatsAppMessageNext4WeekTemplate(scheduledTalk)),
             splitName(scheduledTalk.name())
         );
     }
@@ -105,6 +132,16 @@ public class EmailTemplate {
                 scheduledTalk,
                 whatsAppProperties.getReminderSpeakerWhatsAppOutlineVideosTemplate()
             )
+        );
+    }
+
+    public String processWhatsAppMessageNext4WeekTemplate(ScheduledTalk scheduledTalk) {
+        return whatsAppProperties.getRemiderSpeakerNext4WeekTemplateWhatsApp().formatted(
+            splitName(scheduledTalk.name()), // speaker
+            schedulingProperties.getTalksOverseer(), // talk overseer
+            formatLongDateTalk(scheduledTalk.localDateTime()), // meeting day, format -> domingo 02/12
+            scheduledTalk.outlineNumber(), // outline number
+            scheduledTalk.outlineTitle() // outline title
         );
     }
 

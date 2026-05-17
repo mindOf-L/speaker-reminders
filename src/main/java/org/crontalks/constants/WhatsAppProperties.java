@@ -34,7 +34,7 @@ public class WhatsAppProperties {
     private final String remiderSpeakerTemplateWhatsApp = """
             Hola %s 👋
             Soy %s de la congregación Veredillas de Torrejón de Ardoz, encantado de saludarte 😀
-            Según nuestro calendario de discursos, te esperamos el *%s* para escuchar el bosquejo <b>N° %s</b>, contítulo:</p>
+            Según nuestro calendario de discursos, te esperamos el *%s* para escuchar el bosquejo *N° %s*, con el título:
             *%s*
             *Tu congregación es: %s*
             La reunión de nuestra congregación comienza a las %s y la dirección es %s.
@@ -45,6 +45,16 @@ public class WhatsAppProperties {
             ⏺️ %s %s
             ⏰ Si te quedarás hasta el final para hacer la oración final
             ¡Estamos deseando escucharte!
+            Un fuerte abrazo 🤗
+            """;
+
+    @Getter
+    private final String remiderSpeakerNext4WeekTemplateWhatsApp = """
+            Hola %s 👋
+            Soy %s de la congregación Veredillas de Torrejón de Ardoz, encantado de saludarte 😀
+            Según nuestro calendario de discursos, te esperamos el *%s* para escuchar el bosquejo *N° %s*, con el título:
+            *%s*
+            Nada más queríamos confirmar contigo que por tu parte el discurso sigue adelante. Muchas gracias por confirmar!!
             Un fuerte abrazo 🤗
             """;
 

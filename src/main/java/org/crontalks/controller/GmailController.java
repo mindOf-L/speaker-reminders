@@ -1,6 +1,5 @@
 package org.crontalks.controller;
 
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.crontalks.service.GmailService;
 import org.springframework.http.HttpStatus;
@@ -9,8 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequestMapping("/email")
@@ -29,9 +26,20 @@ public class GmailController {
     }
 
     @PostMapping("/speaker/current")
-    public ResponseEntity<?> sendMailCurrent() throws MessagingException, UnsupportedEncodingException {
+    public ResponseEntity<?> sendMailCurrent() {
         try {
             return new ResponseEntity<>(gmailService.sendMailCurrent(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/speaker/planning")
+    public ResponseEntity<?> sendMailPlanning() {
+        try {
+            var responseCurrent = gmailService.sendMailCurrent();
+            var responseNext4Week = gmailService.sendMailNext4Week();
+            return new ResponseEntity<>(String.format("%s\n%s", responseCurrent, responseNext4Week), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

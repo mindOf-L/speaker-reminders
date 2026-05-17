@@ -14,5 +14,6 @@ public record ScheduledTalk (
     String phoneNumber,
     String email,
     boolean outlineHasImages,
-    boolean outlineHasVideo
+    boolean outlineHasVideo,
+    boolean hasWhatsApp
 ) { }
