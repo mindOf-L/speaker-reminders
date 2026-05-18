@@ -2,6 +2,7 @@ package org.crontalks.controller;
 
 import jakarta.mail.MessagingException;
 import org.crontalks.service.GmailService;
+import org.crontalks.service.GmailSmtpService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,8 +30,8 @@ public class GmailControllerTest {
 
     private MockMvc mockMvc;
 
-    @Mock
-    private GmailService gmailService;
+    @Mock private GmailService gmailService;
+    @Mock private GmailSmtpService gmailSmtpService;
 
     @InjectMocks
     private GmailController gmailController;
@@ -49,9 +50,8 @@ public class GmailControllerTest {
     }
 
     @Test
-    void sendMail_ShouldReturnSuccessResponse_WhenEmailIsSentSuccessfully() throws Exception {
-        String successResponse = SUCCESS_RESPONSE;
-        doReturn(successResponse).when(gmailService).sendMail(anyString(), anyString(), anyString());
+    void sendEmail_ShouldReturnSuccessResponse_WhenEmailIsSentSuccessfully() throws Exception {
+        doReturn(SUCCESS_RESPONSE).when(gmailSmtpService).sendEmail(anyString(), anyString(), anyString());
 
         mockMvc.perform(post(EMAIL_ENDPOINT)
                         .param("to", TEST_EMAIL)
@@ -61,12 +61,12 @@ public class GmailControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(SUCCESS_RESPONSE));
 
-        verify(gmailService).sendMail(eq(TEST_EMAIL), eq(TEST_SUBJECT), eq(TEST_BODY));
+        verify(gmailSmtpService).sendEmail(eq(TEST_EMAIL), eq(TEST_SUBJECT), eq(TEST_BODY));
     }
 
     @Test
-    void sendMail_ShouldReturnErrorResponse_WhenServiceThrowsException() throws Exception {
-        doThrow(new RuntimeException(ERROR_RESPONSE)).when(gmailService).sendMail(anyString(), anyString(), anyString());
+    void sendEmail_ShouldReturnErrorResponse_WhenServiceThrowsException() throws Exception {
+        doThrow(new RuntimeException(ERROR_RESPONSE)).when(gmailSmtpService).sendEmail(anyString(), anyString(), anyString());
 
         mockMvc.perform(post(EMAIL_ENDPOINT)
                         .param("to", TEST_EMAIL)
@@ -76,13 +76,12 @@ public class GmailControllerTest {
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().string(ERROR_RESPONSE));
 
-        verify(gmailService).sendMail(eq(TEST_EMAIL), eq(TEST_SUBJECT), eq(TEST_BODY));
+        verify(gmailSmtpService).sendEmail(eq(TEST_EMAIL), eq(TEST_SUBJECT), eq(TEST_BODY));
     }
 
     @Test
-    void sendMailCurrent_ShouldReturnSuccessResponse_WhenEmailIsSentSuccessfully() throws Exception {
-        String successResponse = SUCCESS_RESPONSE;
-        doReturn(successResponse).when(gmailService).sendMailCurrent();
+    void sendEmailCurrent_ShouldReturnSuccessResponse_WhenEmailIsSentSuccessfully() throws Exception {
+        doReturn(SUCCESS_RESPONSE).when(gmailService).sendMailCurrent();
 
         mockMvc.perform(post(CURRENT_SPEAKER_ENDPOINT)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
@@ -93,7 +92,7 @@ public class GmailControllerTest {
     }
 
     @Test
-    void sendMailCurrent_ShouldReturnErrorResponse_WhenServiceThrowsException() throws Exception {
+    void sendEmailCurrent_ShouldReturnErrorResponse_WhenServiceThrowsException() throws Exception {
         doThrow(new RuntimeException(ERROR_RESPONSE)).when(gmailService).sendMailCurrent();
 
         mockMvc.perform(post(CURRENT_SPEAKER_ENDPOINT)
@@ -105,7 +104,7 @@ public class GmailControllerTest {
     }
 
     @Test
-    void sendMailCurrent_ShouldPropagateMessagingException() throws Exception {
+    void sendEmailCurrent_ShouldPropagateMessagingException() throws Exception {
         MessagingException messagingException = new MessagingException("Messaging error");
         when(gmailService.sendMailCurrent()).thenThrow(messagingException);
 
@@ -118,7 +117,7 @@ public class GmailControllerTest {
     }
 
     @Test
-    void sendMailCurrent_ShouldPropagateUnsupportedEncodingException() throws Exception {
+    void sendEmailCurrent_ShouldPropagateUnsupportedEncodingException() throws Exception {
         UnsupportedEncodingException encodingException = new UnsupportedEncodingException("Encoding error");
         when(gmailService.sendMailCurrent()).thenThrow(encodingException);
 

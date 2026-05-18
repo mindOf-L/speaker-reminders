@@ -53,7 +53,7 @@ public class EmailTemplates {
     private final String specialOutLineScheduledTemplateEmail = """
         <p style="font-size:1.25em">Hola %s 👋</p>
         
-        <p style="font-size:1.25em;font-weight:bold">Para la fecha %s <strong>NO</strong> habrá discurso en la congregación porque hay un evento especial:</p>
+        <p style="font-size:1.25em">Para la fecha %s <strong>NO</strong> habrá discurso en la congregación porque hay un evento especial:</p>
         
         <p style="font-size:2em;font-weight:bold">%s</p>
         

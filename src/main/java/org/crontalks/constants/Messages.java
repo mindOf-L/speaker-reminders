@@ -3,12 +3,12 @@ package org.crontalks.constants;
 public class Messages {
 
     public static final String
-        EMAIL_SENDING = "Sending email to {}}",
+        EMAIL_SENDING = "Sending email to {}",
         EMAIL_SENDING_TO_CURRENT = "Sending email to current speaker",
         EMAIL_SENT_TO_CURRENT = "Email sent to current speaker",
-        EMAIL_SENDING_WHATSAPP_ACTION = "Sending WhatsApp action email to %s",
+        EMAIL_SENDING_WHATSAPP_ACTION = "Sending WhatsApp action email to {}",
         EMAIL_CURRENT_SPEAKER_ACTION = "current speaker",
-        EMAIL_SPECIAL_OUTLINE_SUBJECT = "No talk scheduled due to special outline",
+        EMAIL_SPECIAL_OUTLINE_SUBJECT = "No hay discurso planificado debido a un evento especial",
         EMAIL_NEXT_4_WEEK_SPEAKER_ACTION = "speaker for the next 4 weeks",
         EMAIL_SPECIAL_OUTLINE = "No talk scheduled due to special outline. Sending email to overseer",
         EMAIL_DEFAULT_SUBJECT = "Torrejón de Ardoz - Veredillas: Recordatorio de discurso público para esta semana",

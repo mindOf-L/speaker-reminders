@@ -2,6 +2,7 @@ package org.crontalks.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.crontalks.service.GmailService;
+import org.crontalks.service.GmailSmtpService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,11 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class GmailController {
 
     private final GmailService gmailService;
+    private final GmailSmtpService gmailSmtpService;
 
     @PostMapping
     public ResponseEntity<?> sendMail(@RequestParam String to, @RequestParam String subject, @RequestParam String body) {
         try {
-            return new ResponseEntity<>(gmailService.sendMail(to, subject, body), HttpStatus.OK);
+            gmailSmtpService.sendEmail(to, subject, body);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

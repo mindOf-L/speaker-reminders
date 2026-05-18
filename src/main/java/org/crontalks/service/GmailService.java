@@ -1,6 +1,5 @@
 package org.crontalks.service;
 
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.crontalks.constants.Messages;
@@ -10,7 +9,9 @@ import org.crontalks.entity.ScheduledTalk;
 import org.crontalks.exception.EmailRecipientNotInformedException;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
+import java.time.temporal.WeekFields;
+import java.util.Locale;
 
 @Slf4j
 @Service
@@ -19,23 +20,12 @@ public class GmailService {
 
     private final EmailTemplate emailTemplate;
     private final SchedulingProperties schedulingProperties;
-    private final GmailSmtpService emailService;
+    private final GmailSmtpService gmailSmtpService;
     private final SpeakerService speakerService;
 
     private final int outlineIndexOutsideOfPlanning = 900;
 
-    public String sendMail(String to, String subject, String body) {
-        try {
-            log.info(Messages.EMAIL_SENDING, to);
-            emailService.sendEmail(to, subject, body);
-
-            return String.format(Messages.EMAIL_SENT_CORRECTLY_NO_CONTENT, to);
-        } catch (Exception e) {
-            throw new RuntimeException(String.format(Messages.ERROR_SENDING_EMAIL, e.getMessage()), e);
-        }
-    }
-
-    public String sendMailCurrent() throws MessagingException, UnsupportedEncodingException {
+    public String sendMailCurrent() {
         var scheduledTalk = speakerService.getCurrentScheduledTalk();
 
         if (scheduledTalk == null)
@@ -54,7 +44,7 @@ public class GmailService {
         );
     }
 
-    public String sendMailNext4Week() throws MessagingException, UnsupportedEncodingException {
+    public String sendMailNext4Week() {
         var scheduledTalk = speakerService.getNext4WeekScheduledTalk();
 
         if (scheduledTalk == null)
@@ -76,7 +66,8 @@ public class GmailService {
     private String sendSpecialOutlineEmail(ScheduledTalk scheduledTalk) {
         log.info(Messages.EMAIL_SPECIAL_OUTLINE);
         var bodySpecialOutlineScheduled = emailTemplate.processEmailSpecialOutlineScheduledTemplate(scheduledTalk);
-        return sendMail(schedulingProperties.getOverseerEmail(), Messages.EMAIL_SPECIAL_OUTLINE_SUBJECT, bodySpecialOutlineScheduled);
+        gmailSmtpService.sendEmail(schedulingProperties.getOverseerEmail(), Messages.EMAIL_SPECIAL_OUTLINE_SUBJECT, bodySpecialOutlineScheduled);
+        return String.format(Messages.EMAIL_SENT_CORRECTLY_NO_CONTENT, schedulingProperties.getOverseerEmail());
     }
 
     private String sendMailForScheduledTalk(
@@ -85,22 +76,29 @@ public class GmailService {
         final String body,
         final String subjectWathsApp,
         final String bodyEmailWhatsApp
-    ) throws MessagingException, UnsupportedEncodingException {
+    ) {
         try {
             log.info(Messages.EMAIL_SENDING_TO_CURRENT);
-            emailService.sendEmail(scheduledTalk.email(), subject, body);
+            gmailSmtpService.sendEmail(scheduledTalk.email(), subject, body);
             log.info(Messages.EMAIL_SENT_TO_CURRENT);
 
             if (scheduledTalk.hasWhatsApp()) {
-                log.info(String.format(Messages.EMAIL_SENDING_WHATSAPP_ACTION, Messages.EMAIL_SENDING_TO_CURRENT));
-                emailService.sendEmail(scheduledTalk.email(), subjectWathsApp, new String[]{schedulingProperties.getOverseerEmail()}, bodyEmailWhatsApp);
+                var weekFields = WeekFields.of(Locale.getDefault());
+                var scheduledTalkWeek = scheduledTalk.localDateTime().get(weekFields.weekOfWeekBasedYear());
+                var currentWeek = LocalDateTime.now().get(weekFields.weekOfWeekBasedYear());
+
+                log.info(Messages.EMAIL_SENDING_WHATSAPP_ACTION, scheduledTalkWeek == currentWeek
+                    ? Messages.EMAIL_CURRENT_SPEAKER_ACTION
+                    : Messages.EMAIL_NEXT_4_WEEK_SPEAKER_ACTION);
+
+                gmailSmtpService.sendEmail(schedulingProperties.getOverseerEmail(), subjectWathsApp, new String[]{schedulingProperties.getOverseerEmail()}, bodyEmailWhatsApp);
                 log.info(Messages.EMAIL_SENT);
             }
             return String.format(Messages.EMAIL_SENT_CORRECTLY_NO_CONTENT, scheduledTalk.email());
 
         } catch (EmailRecipientNotInformedException e) {
             var bodyRecipientNotInformed = emailTemplate.emailSpeakerNotInformedTemplate(scheduledTalk);
-            emailService.sendEmail(schedulingProperties.getOverseerEmail(), Messages.EMAIL_NOT_INFORMED_SUBJECT, bodyRecipientNotInformed);
+            gmailSmtpService.sendEmail(schedulingProperties.getOverseerEmail(), Messages.EMAIL_NOT_INFORMED_SUBJECT, bodyRecipientNotInformed);
             throw new RuntimeException(String.format(Messages.ERROR_SENDING_EMAIL, e.getMessage()), e);
 
         } catch (Exception e) {
@@ -111,11 +109,11 @@ public class GmailService {
     public void sendMailCurrentFails() {
         try {
             if (speakerService.getCurrentScheduledTalk() == null) {
-                emailService.sendEmail(schedulingProperties.getOverseerEmail(), Messages.WARNING_SENDING_EMAIL_EMPTY_DATA, emailTemplate.emailEmptyData());
+                gmailSmtpService.sendEmail(schedulingProperties.getOverseerEmail(), Messages.WARNING_SENDING_EMAIL_EMPTY_DATA, emailTemplate.emailEmptyData());
             } else {
-                emailService.sendEmail(schedulingProperties.getOverseerEmail(), Messages.WARNING_SENDING_EMAIL_SOME_EMPTY_DATA, emailTemplate.emailSomeEmptyData());
+                gmailSmtpService.sendEmail(schedulingProperties.getOverseerEmail(), Messages.WARNING_SENDING_EMAIL_SOME_EMPTY_DATA, emailTemplate.emailSomeEmptyData());
             }
-        } catch (MessagingException | UnsupportedEncodingException e) {
+        } catch (Exception e) {
             log.error("Failed to send warning email about failures: {}", e.getMessage(), e);
         }
     }
