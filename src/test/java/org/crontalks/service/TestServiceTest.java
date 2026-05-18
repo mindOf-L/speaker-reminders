@@ -1,6 +1,5 @@
 package org.crontalks.service;
 
-import jakarta.mail.MessagingException;
 import org.crontalks.constants.EmailTemplates;
 import org.crontalks.constants.Messages;
 import org.crontalks.constants.SchedulingProperties;
@@ -87,7 +86,7 @@ public class TestServiceTest {
     }
 
     @Test
-    void sendMailTest_ShouldUseDefaultValues_WhenParametersAreNull() throws Exception {
+    void sendMailTest_ShouldUseDefaultValues_WhenParametersAreNull() {
         when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
         when(emailTemplate.processEmailSpeakerTemplate(mockScheduledTalk)).thenReturn(MOCKED_EMAIL_BODY);
         when(schedulingProperties.getOverseerEmail()).thenReturn(OVERSEER_EMAIL);
@@ -99,7 +98,7 @@ public class TestServiceTest {
     }
 
     @Test
-    void sendMailTest_ShouldUseProvidedValues_WhenParametersAreProvided() throws Exception {
+    void sendMailTest_ShouldUseProvidedValues_WhenParametersAreProvided() {
         when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
         when(emailTemplate.processEmailSpeakerTemplate(mockScheduledTalk)).thenReturn(MOCKED_EMAIL_BODY);
         String customSubject = "Custom Subject";
@@ -112,12 +111,12 @@ public class TestServiceTest {
     }
 
     @Test
-    void sendMailTest_ShouldThrowException_WhenExceptionOccurs() throws Exception {
+    void sendMailTest_ShouldThrowException_WhenExceptionOccurs() {
         when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
         when(emailTemplate.processEmailSpeakerTemplate(mockScheduledTalk)).thenReturn(MOCKED_EMAIL_BODY);
         when(schedulingProperties.getOverseerEmail()).thenReturn(OVERSEER_EMAIL);
 
-        doThrow(new MessagingException("Test exception")).when(emailService)
+        doThrow(new RuntimeException("Test exception")).when(emailService)
             .sendEmail(eq(OVERSEER_EMAIL), eq(EMAIL_TEST_SUBJECT), isNull(), eq(MOCKED_EMAIL_BODY));
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> testService.sendMailTest(null, null, null));
@@ -125,7 +124,7 @@ public class TestServiceTest {
     }
 
     @Test
-    void sendWrongMailTest_ShouldSendEmailToOverseer() throws Exception {
+    void sendWrongMailTest_ShouldSendEmailToOverseer() {
         when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
         when(schedulingProperties.getOverseerEmail()).thenReturn(OVERSEER_EMAIL);
         when(emailTemplates.getReminderSpeakerNotInformedTemplate()).thenReturn("Template %s");
@@ -142,12 +141,12 @@ public class TestServiceTest {
     }
 
     @Test
-    void sendWrongMailTest_ShouldThrowException_WhenExceptionOccurs() throws Exception {
+    void sendWrongMailTest_ShouldThrowException_WhenExceptionOccurs() {
         when(speakerService.getCurrentScheduledTalk()).thenReturn(mockScheduledTalk);
         when(schedulingProperties.getOverseerEmail()).thenReturn(OVERSEER_EMAIL);
         when(emailTemplates.getReminderSpeakerNotInformedTemplate()).thenReturn("Template %s");
 
-        doThrow(new MessagingException("Test exception")).when(emailService).sendEmail(
+        doThrow(new RuntimeException("Test exception")).when(emailService).sendEmail(
             anyString(), anyString(), isNull(), anyString()
         );
 

@@ -12,13 +12,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import java.io.UnsupportedEncodingException;
-
 import static org.crontalks.constants.Messages.ERROR_EMAIL_RECIPIENT_NOT_INFORMED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -54,7 +55,7 @@ public class GmailSmtpServiceTest {
     }
 
     @Test
-    void sendEmail_WithThreeParams_ShouldSendEmail() throws MessagingException, UnsupportedEncodingException {
+    void sendEmail_WithThreeParams_ShouldSendEmail() {
         doNothing().when(mailSender).send(any(MimeMessage.class));
 
         gmailSmtpService.sendEmail(TEST_EMAIL, TEST_SUBJECT, TEST_BODY);
@@ -64,7 +65,7 @@ public class GmailSmtpServiceTest {
     }
 
     @Test
-    void sendEmail_WithFourParams_ShouldSendEmail() throws MessagingException, UnsupportedEncodingException {
+    void sendEmail_WithFourParams_ShouldSendEmail() {
         doNothing().when(mailSender).send(any(MimeMessage.class));
         String[] customCC = new String[]{"custom@example.com"};
 
@@ -75,7 +76,7 @@ public class GmailSmtpServiceTest {
     }
 
     @Test
-    void sendEmail_WithNullCC_ShouldUseDefaultCC() throws MessagingException, UnsupportedEncodingException {
+    void sendEmail_WithNullCC_ShouldUseDefaultCC() {
         doNothing().when(mailSender).send(any(MimeMessage.class));
 
         gmailSmtpService.sendEmail(TEST_EMAIL, TEST_SUBJECT, null, TEST_BODY);
@@ -96,5 +97,16 @@ public class GmailSmtpServiceTest {
         Exception exception = assertThrows(EmailRecipientNotInformedException.class, () -> gmailSmtpService.sendEmail(null, TEST_SUBJECT, TEST_BODY));
 
         assertEquals(ERROR_EMAIL_RECIPIENT_NOT_INFORMED, exception.getMessage());
+    }
+
+    @Test
+    void sendEmail_WhenMessagingExceptionOccurs_ShouldThrowRuntimeException() throws Exception {
+        doThrow(new MessagingException("SMTP error")).when(mockMimeMessage).setSubject(anyString(), anyString());
+
+        Exception exception = assertThrows(RuntimeException.class, () ->
+            gmailSmtpService.sendEmail(TEST_EMAIL, TEST_SUBJECT, TEST_BODY)
+        );
+
+        assertTrue(exception.getMessage().contains("SMTP error"));
     }
 }

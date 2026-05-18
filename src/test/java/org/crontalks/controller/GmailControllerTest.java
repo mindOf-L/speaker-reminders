@@ -1,6 +1,5 @@
 package org.crontalks.controller;
 
-import jakarta.mail.MessagingException;
 import org.crontalks.service.GmailService;
 import org.crontalks.service.GmailSmtpService;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,10 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.io.UnsupportedEncodingException;
-
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -51,7 +49,7 @@ public class GmailControllerTest {
 
     @Test
     void sendEmail_ShouldReturnSuccessResponse_WhenEmailIsSentSuccessfully() throws Exception {
-        doReturn(SUCCESS_RESPONSE).when(gmailSmtpService).sendEmail(anyString(), anyString(), anyString());
+        doNothing().when(gmailSmtpService).sendEmail(anyString(), anyString(), anyString());
 
         mockMvc.perform(post(EMAIL_ENDPOINT)
                         .param("to", TEST_EMAIL)
@@ -59,7 +57,7 @@ public class GmailControllerTest {
                         .param("body", TEST_BODY)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().isOk())
-                .andExpect(content().string(SUCCESS_RESPONSE));
+                .andExpect(content().string(""));
 
         verify(gmailSmtpService).sendEmail(eq(TEST_EMAIL), eq(TEST_SUBJECT), eq(TEST_BODY));
     }
@@ -105,7 +103,7 @@ public class GmailControllerTest {
 
     @Test
     void sendEmailCurrent_ShouldPropagateMessagingException() throws Exception {
-        MessagingException messagingException = new MessagingException("Messaging error");
+        RuntimeException messagingException = new RuntimeException("Messaging error");
         when(gmailService.sendMailCurrent()).thenThrow(messagingException);
 
         mockMvc.perform(post(CURRENT_SPEAKER_ENDPOINT)
@@ -118,7 +116,7 @@ public class GmailControllerTest {
 
     @Test
     void sendEmailCurrent_ShouldPropagateUnsupportedEncodingException() throws Exception {
-        UnsupportedEncodingException encodingException = new UnsupportedEncodingException("Encoding error");
+        RuntimeException encodingException = new RuntimeException("Encoding error");
         when(gmailService.sendMailCurrent()).thenThrow(encodingException);
 
         mockMvc.perform(post(CURRENT_SPEAKER_ENDPOINT)
